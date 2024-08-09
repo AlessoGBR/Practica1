@@ -4,6 +4,8 @@
 
 package com.mycompany.practica1;
 
+import com.mycompany.practica1.Frontend.solicitud;
+
 /**
  *
  * @author alesso
@@ -11,6 +13,7 @@ package com.mycompany.practica1;
 public class Practica1 {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        solicitud solici = new solicitud();
+        solici.setVisible(true);
     }
 }
