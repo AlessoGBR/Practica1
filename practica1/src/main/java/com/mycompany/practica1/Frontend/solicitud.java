@@ -17,7 +17,11 @@ public class solicitud extends javax.swing.JFrame {
 
     public solicitud() {
         initComponents();
-        jPanel2.setVisible(false);
+        txtNombre.setEnabled(false);
+        txtDireccion.setEnabled(false);
+        txtSalario.setEnabled(false);
+        cbTarjetas.setEnabled(false);
+        btnSolicitar.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -42,6 +46,7 @@ public class solicitud extends javax.swing.JFrame {
         txtSalario = new javax.swing.JTextPane();
         cbTarjetas = new javax.swing.JComboBox<>();
         btnSolicitar = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SOLICITUD");
@@ -149,31 +154,43 @@ public class solicitud extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        btnRegresar.setText("REGRESAR");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(btnIngresar))
+                        .addGap(39, 39, 39)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(23, 23, 23)
+                                .addComponent(btnIngresar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(jLabel1))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel1))
+                        .addGap(61, 61, 61)
+                        .addComponent(btnRegresar))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
+                        .addGap(71, 71, 71)
                         .addComponent(btnCrear)))
                 .addGap(53, 53, 53)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(80, 80, 80)
                         .addComponent(jLabel2)
@@ -181,8 +198,10 @@ public class solicitud extends javax.swing.JFrame {
                         .addComponent(btnIngresar)
                         .addGap(42, 42, 42)
                         .addComponent(jLabel1)
-                        .addGap(21, 21, 21)
-                        .addComponent(btnCrear))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCrear)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRegresar))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -220,28 +239,50 @@ public class solicitud extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        // Muestra otra ventana en el cual existira un formulario para crear una nueva solicitud        
-        this.jPanel2.setVisible(true);
+        // Muestra otra ventana en el cual existira un formulario para crear una nueva solicitud 
+        btnIngresar.setEnabled(false);
+        txtNombre.setEnabled(true);
+        txtDireccion.setEnabled(true);
+        txtSalario.setEnabled(true);
+        cbTarjetas.setEnabled(true);
+        btnSolicitar.setEnabled(true);
 
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnSolicitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarActionPerformed
         if (txtNombre.getText().length() == 0) {
-            System.out.println("no ingreso un nombre");
+            JOptionPane.showMessageDialog(null, "NO SE INGRESO UN NOMBRE");
+            return;
         } else if (txtSalario.getText().length() == 0) {
-            System.out.println("no se ingreso un salario");
+            JOptionPane.showMessageDialog(null, "NO SE INGRESO UN SALARIO");
+            return;
         } else if (txtDireccion.getText().length() == 0) {
-            System.out.println("NO SE INGRESO UN SALARIO");
-        } else {
-            JOptionPane.showMessageDialog(this, "SOLICITUD ENVIADA");
+            JOptionPane.showMessageDialog(null, "NO SE INGRESO UNA DIRECCION");
+            return;
+        }
+
+        try {
+            // Intentar convertir el texto a un número entero
+            double salario = Double.parseDouble(txtSalario.getText());
+            // Si la conversión es exitosa, puedes continuar con el procesamiento
+        } catch (NumberFormatException ex) {
+            // Si la conversión falla, muestra un mensaje de error
+            JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UN SALARIO VALIDO", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btnSolicitarActionPerformed
+
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        menuPrincipal menu = new menuPrincipal();
+        this.setVisible(false);
+        menu.setVisible(true);
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCrear;
     private javax.swing.JButton btnIngresar;
+    private javax.swing.JButton btnRegresar;
     private javax.swing.JButton btnSolicitar;
     private javax.swing.JComboBox<String> cbTarjetas;
     private javax.swing.JLabel jLabel1;
