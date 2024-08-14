@@ -130,7 +130,7 @@ public class menuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSolicitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitudActionPerformed
-        solicitud soli = new solicitud();
+        solicitudFr soli = new solicitudFr();
         soli.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSolicitudActionPerformed
@@ -140,7 +140,9 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMovimientoActionPerformed
 
     private void btnAutorizacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorizacionActionPerformed
-        // TODO add your handling code here:
+        autorizacion auto = new autorizacion();
+        this.setVisible(false);
+        auto.setVisible(true);
     }//GEN-LAST:event_btnAutorizacionActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -148,7 +150,9 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        // TODO add your handling code here:
+        consulta consulta = new consulta();
+        this.setVisible(false);
+        consulta.setVisible(true);
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed

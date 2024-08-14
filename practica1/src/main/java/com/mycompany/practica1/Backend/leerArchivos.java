@@ -8,6 +8,6 @@ package com.mycompany.practica1.Backend;
  *
  * @author alesso
  */
-public class conexionBD {
+public class leerArchivos {
     
 }
