@@ -4,6 +4,9 @@
  */
 package com.mycompany.practica1.Frontend;
 
+import com.mycompany.practica1.Backend.autoTarjetas;
+import com.mycompany.practica1.Backend.validarTarjetas;
+import com.mycompany.practica1.conexionDB.conexionDB;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -14,6 +17,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author alesso
  */
 public class autorizacion extends javax.swing.JFrame {
+
+    private autoTarjetas autorizacion;
+    private conexionDB conexion;
 
     public autorizacion() {
         initComponents();
@@ -163,9 +169,15 @@ public class autorizacion extends javax.swing.JFrame {
         }
         try {
             // Intentar convertir el texto a un número entero
-            double solicitud = Double.parseDouble(txtSolicitud.getText());
+            int solicitud = Integer.parseInt(txtSolicitud.getText());
             // Si la conversión es exitosa, puedes continuar con el procesamiento
-            JOptionPane.showMessageDialog(null, "VERIFICANDO AUTORIZACION");
+            // realizamos las operaciones para ver si la solicitud es apta para la aprovacion de la tarjeta
+            autorizacion = new autoTarjetas();
+            conexion = new conexionDB();
+            conexion.consultarSolicitud(solicitud, autorizacion);
+            validarTarjetas validar = new validarTarjetas(autorizacion, conexion);
+            validar.validacionTarjetas();
+            autorizado();
         } catch (NumberFormatException ex) {
             // Si la conversión falla, muestra un mensaje de error
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UNA SOLICITUD VALIDA", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -195,6 +207,17 @@ public class autorizacion extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
+    public void autorizado() {
+        boolean autoriazado = autorizacion.isAprovado();
+        txtSolicitud.setText("");
+        if (autoriazado) {
+            JOptionPane.showMessageDialog(null, "TARJETA AUTORIZADA");
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "TARJETA DENEGADA");
+        }
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAutorizar;

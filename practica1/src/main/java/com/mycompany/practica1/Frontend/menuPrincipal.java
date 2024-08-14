@@ -130,7 +130,7 @@ public class menuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSolicitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitudActionPerformed
-        solicitud soli = new solicitud();
+        solicitudFr soli = new solicitudFr();
         soli.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSolicitudActionPerformed

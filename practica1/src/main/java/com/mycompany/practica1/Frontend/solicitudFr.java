@@ -5,6 +5,7 @@
 package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.crearSolicitud;
+import com.mycompany.practica1.conexionDB.conexionDB;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -14,12 +15,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  *
  * @author alesso
  */
-public class solicitud extends javax.swing.JFrame {
+public class solicitudFr extends javax.swing.JFrame {
 
-    int solicitud;
-    double salario;
+    private int solicitudId;
+    private double salario;
+    private conexionDB conexion;
+    private crearSolicitud solicitud;
 
-    public solicitud() {
+    public solicitudFr() {
         initComponents();
     }
 
@@ -85,11 +88,6 @@ public class solicitud extends javax.swing.JFrame {
         jScrollPane3.setViewportView(txtSalario);
 
         cbTarjetas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NACIONAL", "REGIONAL", "INTERNACIONAL" }));
-        cbTarjetas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbTarjetasActionPerformed(evt);
-            }
-        });
 
         btnSolicitar.setText("SOLICITAR");
         btnSolicitar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -280,7 +278,7 @@ public class solicitud extends javax.swing.JFrame {
 
         try {
             // Intentar convertir el texto a un número entero
-            solicitud = Integer.parseInt(txtSolicitud.getText());
+            solicitudId = Integer.parseInt(txtSolicitud.getText());
 
         } catch (NumberFormatException ex) {
             // Si la conversión falla, muestra un mensaje de error
@@ -292,18 +290,18 @@ public class solicitud extends javax.swing.JFrame {
             // Intentar convertir el texto a un número entero
             salario = Double.parseDouble(txtSalario.getText());
 
-            // Si la conversión es exitosa, puedes continuar con el procesamiento
-            JOptionPane.showMessageDialog(null, "SOLICITUD ENVIADA");
-
+            // Si la conversión es exitosa, puedes continuar con el procesamiento            
         } catch (NumberFormatException ex) {
             // Si la conversión falla, muestra un mensaje de error
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UN SALARIO VALIDO", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        crearSolicitud soli = new crearSolicitud(solicitud, txtNombre.getText(), salario, txtDireccion.getText(), txtFecha.getText(),
+        solicitud = new crearSolicitud(solicitudId, txtNombre.getText(), salario, txtDireccion.getText(), txtFecha.getText(),
                 cbTarjetas.getSelectedItem().toString());
-
+        conexion = new conexionDB();
+        conexion.crearSolicitud(solicitud);
+        JOptionPane.showMessageDialog(null, "SOLICITUD ENVIADA");
 
     }//GEN-LAST:event_btnSolicitarActionPerformed
 
@@ -312,10 +310,6 @@ public class solicitud extends javax.swing.JFrame {
         this.setVisible(false);
         menu.setVisible(true);
     }//GEN-LAST:event_btnRegresarActionPerformed
-
-    private void cbTarjetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTarjetasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbTarjetasActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
