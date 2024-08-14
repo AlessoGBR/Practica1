@@ -7,6 +7,7 @@ package com.mycompany.practica1.conexionDB;
 import com.mycompany.practica1.Backend.autoTarjetas;
 import com.mycompany.practica1.Backend.crearSolicitud;
 import com.mycompany.practica1.Backend.crearTarjeta;
+import com.mycompany.practica1.Frontend.cancelar;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,6 +25,7 @@ public class conexionDB {
     private static final String USER = "root";
     private static final String PASSWORD = "26359";
     private Connection connection;
+    public boolean tarjetaExistente;
 
     public conexionDB() {
         conectar();
@@ -90,8 +92,8 @@ public class conexionDB {
     }
 
     public void crearTarjeta(crearTarjeta tarjeta) {
-        String insert = "INSERT INTO tarjeta (numero, nombre, limite, tipo, estado, direccion, fecha) "
-                + "VALUES (?, ?, ?, ?, ?, ?,?)";
+        String insert = "INSERT INTO tarjeta (numero, nombre, limite, tipo, estado, direccion, fecha, saldo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
             statementInsert.setString(1, tarjeta.getNumero());
@@ -101,9 +103,58 @@ public class conexionDB {
             statementInsert.setBoolean(5, tarjeta.isEstado());
             statementInsert.setString(6, tarjeta.getDireccion());
             statementInsert.setDate(7, java.sql.Date.valueOf(tarjeta.getFecha()));
+            statementInsert.setDouble(8, tarjeta.getSaldo());
             statementInsert.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error al insertar en la base de datos");
+        }
+
+    }
+
+    public void consultarTarjeta(String numeroTarjeta, crearTarjeta tarjeta) {
+        try {
+            String select = "SELECT * FROM tarjeta WHERE numero = " + numeroTarjeta;
+            Statement statementInsert = connection.createStatement();
+            ResultSet resultSet = statementInsert.executeQuery(select);
+
+            while (resultSet.next()) {
+                tarjeta.setNumero(resultSet.getString("numero"));
+                tarjeta.setNombre(resultSet.getString("nombre"));
+                tarjeta.setLimite(resultSet.getDouble("limite"));
+                tarjeta.setTipo(resultSet.getString("tipo"));
+                tarjeta.setEstado(resultSet.getBoolean("estado"));
+                tarjeta.setDireccion(resultSet.getString("direccion"));
+                tarjeta.setFecha(resultSet.getString("fecha"));
+                tarjeta.setSaldo(resultSet.getDouble("saldo"));
+                if (tarjeta.getNombre() == null) {
+                    tarjetaExistente = false;
+                } else {
+                    tarjetaExistente = true;
+                }
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al consultar a la DB");
+        }
+    }
+
+    public void cancelarTarjeta(crearTarjeta tarjeta, cancelar mensaje) {
+        try {
+            String update = "UPDATE tarjeta SET estado = false WHERE numero = ?";
+
+            try (PreparedStatement statementUpdate = connection.prepareStatement(update)) {
+                statementUpdate.setString(1, tarjeta.getNumero());
+
+                int rowsAffected = statementUpdate.executeUpdate(); // Ejecuta la actualización
+                if (rowsAffected > 0) {
+                    mensaje.mensaje();
+                } else {
+                    mensaje.mensajeError();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar el estado en la base de datos");
         }
 
     }

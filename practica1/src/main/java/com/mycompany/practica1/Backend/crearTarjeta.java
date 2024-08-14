@@ -17,9 +17,29 @@ public class crearTarjeta {
     private boolean estado;
     private String direccion;
     private String fecha;
+    private double saldo;
 
     public crearTarjeta() {
 
+    }
+
+    public boolean cancelarTarjeta() {
+        if (getSaldo() > 0 || isEstado() == false) {            
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void imiprimirDatos() {
+        System.out.println(getNumero());
+        System.out.println(getNombre());
+        System.out.println(getLimite());
+        System.out.println(getTipo());
+        System.out.println(isEstado());
+        System.out.println(getDireccion());
+        System.out.println(getFecha());
+        System.out.println(getSaldo());
     }
 
     public String getNumero() {
@@ -77,7 +97,13 @@ public class crearTarjeta {
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
-    
-    
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
 
 }

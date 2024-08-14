@@ -73,6 +73,7 @@ public class validarTarjetas {
         tarjeta.setDireccion(auto.getDireccion());
         tarjeta.setEstado(true);
         tarjeta.setFecha(auto.getFecha());
+        tarjeta.setSaldo(0);
         int num1 = random.nextInt(0, 9);
         int num2 = random.nextInt(0, 9);
         int num3 = random.nextInt(0, 9);
