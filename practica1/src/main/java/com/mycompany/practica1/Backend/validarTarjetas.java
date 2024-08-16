@@ -24,6 +24,7 @@ public class validarTarjetas {
 
     private autoTarjetas auto;
     private conexionDB conexion;
+    private String numeroTarjeta;
 
     public validarTarjetas(autoTarjetas auto, conexionDB conexion) {
         this.auto = auto;
@@ -32,40 +33,49 @@ public class validarTarjetas {
 
     public void validacionTarjetas() {
         limite = auto.getSalario() * 0.6;
-        if (auto.getTipo().equals("NACIONAL")) {
-            if (limite <= LIMITE_NACIONAL) {
-                System.out.println("LA TARJETA NO PUEDE SER ACEPTADA");
-                auto.setAprovado(false);
-            } else {
-                System.out.println("TARJETA ACEPTADA");
-                auto.setAprovado(true);
-                crearTarjeta();
-            }
-        } else if (auto.getTipo().equals("REGIONAL")) {
-            if (limite <= LIMITE_REGIONAL) {
-                System.out.println("TARJETA NO PUEDE SER ACEPTADA");
-                auto.setAprovado(false);
-            } else {
-                System.out.println("TARJETA ACEPTADA");
-                auto.setAprovado(true);
-                crearTarjeta();
-            }
-        } else if (auto.getTipo().equals("INTERNACIONAL")) {
-            if (limite <= LIMITE_INTERNACIONAL) {
-                System.out.println("NO ACEPTADA");
-                auto.setAprovado(false);
-            } else {
-                System.out.println("ACEPTADA");
-                auto.setAprovado(true);
-                crearTarjeta();
-            }
+        switch (auto.getTipo()) {
+            case "NACIONAL":
+                if (limite <= LIMITE_NACIONAL) {
+                    auto.setAprovado(false);
+                } else {
+                    auto.setAprovado(true);
+                    autorizarTarjeta();
+                }   break;
+            case "REGIONAL":
+                if (limite <= LIMITE_REGIONAL) {
+                    auto.setAprovado(false);
+                } else {
+                    auto.setAprovado(true);
+                    autorizarTarjeta();
+                }   break;
+            case "INTERNACIONAL":
+                if (limite <= LIMITE_INTERNACIONAL) {
+                    auto.setAprovado(false);
+                } else {
+                    auto.setAprovado(true);
+                    
+                }   break;
+            default:
+                break;
         }
+        
+        autorizarTarjeta();
 
+    }
+
+    private void autorizarTarjeta() {
         conexion.crearAutorizacion(auto);
+        if (auto.isAprovado()) {
+            auto.setAutorizado(1);
+            crearTarjeta();
+        } else {
+            auto.setAutorizado(2);
+        }
 
     }
 
     private void crearTarjeta() {
+
         crearTarjeta tarjeta = new crearTarjeta();
         Random random = new Random();
         tarjeta.setNombre(auto.getNombre());
@@ -81,19 +91,25 @@ public class validarTarjetas {
         int num5 = random.nextInt(0, 9);
 
         if (auto.getTipo().equals("NACIONAL")) {
-            String numeroTarjeta = NUMERO_NACIONAL + num1 + num2 + num3 + num4 + num5;
+            numeroTarjeta = NUMERO_NACIONAL + num1 + num2 + num3 + num4 + num5;
             tarjeta.setLimite(5000);
             tarjeta.setNumero(numeroTarjeta);
         } else if (auto.getTipo().equals("REGIONAL")) {
-            String numeroTarjeta = NUMERO_REGIONAL + num1 + num2 + num3 + num4 + num5;
+            numeroTarjeta = NUMERO_REGIONAL + num1 + num2 + num3 + num4 + num5;
             tarjeta.setLimite(10000);
             tarjeta.setNumero(numeroTarjeta);
         } else if (auto.getTipo().equals("INTERNACIONAL")) {
-            String numeroTarjeta = NUMERO_INTERNACIONAL + num1 + num2 + num3 + num4 + num5;
+            numeroTarjeta = NUMERO_INTERNACIONAL + num1 + num2 + num3 + num4 + num5;
             tarjeta.setLimite(20000);
             tarjeta.setNumero(numeroTarjeta);
         }
 
         conexion.crearTarjeta(tarjeta);
+
     }
+
+    public String getNumeroTarjeta() {
+        return numeroTarjeta;
+    }
+
 }
