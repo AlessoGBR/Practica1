@@ -136,7 +136,9 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSolicitudActionPerformed
 
     private void btnMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovimientoActionPerformed
-        // TODO add your handling code here:
+        movimientos movimientos = new movimientos();
+        this.setVisible(false);
+        movimientos.setVisible(true);
     }//GEN-LAST:event_btnMovimientoActionPerformed
 
     private void btnAutorizacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorizacionActionPerformed
@@ -146,7 +148,9 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAutorizacionActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        cancelar cancelar = new cancelar();
+        this.setVisible(false);
+        cancelar.setVisible(true);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
@@ -156,7 +160,7 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnReportesActionPerformed
 
 

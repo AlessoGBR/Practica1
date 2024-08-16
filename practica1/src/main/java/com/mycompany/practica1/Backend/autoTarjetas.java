@@ -17,7 +17,8 @@ public class autoTarjetas {
     private int numeroSolicitud;
     private String fecha;
     private boolean aprovado;
-
+    private int autorizado;
+    
     public autoTarjetas() {
 
     }
@@ -76,6 +77,14 @@ public class autoTarjetas {
 
     public void setAprovado(boolean aprovado) {
         this.aprovado = aprovado;
+    }
+
+    public int getAutorizado() {
+        return autorizado;
+    }
+
+    public void setAutorizado(int autorizado) {
+        this.autorizado = autorizado;
     }
 
     
