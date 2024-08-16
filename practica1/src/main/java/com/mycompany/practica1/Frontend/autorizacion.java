@@ -20,6 +20,8 @@ public class autorizacion extends javax.swing.JFrame {
 
     private autoTarjetas autorizacion;
     private conexionDB conexion;
+    private validarTarjetas validar;
+    private String nombre;
 
     public autorizacion() {
         initComponents();
@@ -175,9 +177,14 @@ public class autorizacion extends javax.swing.JFrame {
             autorizacion = new autoTarjetas();
             conexion = new conexionDB();
             conexion.consultarSolicitud(solicitud, autorizacion);
-            validarTarjetas validar = new validarTarjetas(autorizacion, conexion);
-            validar.validacionTarjetas();
-            autorizado();
+            if (conexion.solicitudExistente) {
+                validar = new validarTarjetas(autorizacion, conexion);
+                validar.validacionTarjetas();
+                autorizado();
+
+            } else {
+                noExisteSolicitud();
+            }
         } catch (NumberFormatException ex) {
             // Si la conversión falla, muestra un mensaje de error
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UNA SOLICITUD VALIDA", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -208,14 +215,26 @@ public class autorizacion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     public void autorizado() {
+        if (autorizacion.getAutorizado() == 2) {
+            JOptionPane.showMessageDialog(null, "NUMERO DE SOLICITUD YA REGISTRADO");
+            return;
+        }
         boolean autoriazado = autorizacion.isAprovado();
         txtSolicitud.setText("");
         if (autoriazado) {
             JOptionPane.showMessageDialog(null, "TARJETA AUTORIZADA");
-            
+            nombre = autorizacion.getNombre();
+            tarjeta tarjeta = new tarjeta(validar.getNumeroTarjeta(), nombre);
+            this.setVisible(false);
+            tarjeta.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null, "TARJETA DENEGADA");
         }
+
+    }
+
+    private void noExisteSolicitud() {
+        JOptionPane.showMessageDialog(null, "SOLICITUD NO REGISTRADA");
 
     }
 
