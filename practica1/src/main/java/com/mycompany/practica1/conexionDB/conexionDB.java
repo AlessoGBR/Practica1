@@ -7,7 +7,9 @@ package com.mycompany.practica1.conexionDB;
 import com.mycompany.practica1.Backend.autoTarjetas;
 import com.mycompany.practica1.Backend.crearSolicitud;
 import com.mycompany.practica1.Backend.crearTarjeta;
+import com.mycompany.practica1.Backend.movimiento;
 import com.mycompany.practica1.Frontend.cancelar;
+import com.mycompany.practica1.Frontend.movimientos;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,6 +28,8 @@ public class conexionDB {
     private static final String PASSWORD = "26359";
     private Connection connection;
     public boolean tarjetaExistente;
+    public boolean solicitudEnviada;
+    public boolean solicitudExistente;
 
     public conexionDB() {
         conectar();
@@ -69,6 +73,7 @@ public class conexionDB {
                 auto.setTipo(resultSet.getString("tipo"));
                 auto.setFecha(resultSet.getString("fecha"));
                 auto.setDireccion(resultSet.getString("direccion"));
+                solicitudExistente = auto.getNombre() != null;
             }
 
         } catch (SQLException e) {
@@ -77,17 +82,37 @@ public class conexionDB {
     }
 
     public void crearAutorizacion(autoTarjetas solicitud) {
-        String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
-                + "VALUES (?, ?, ?, ?)";
+        String consulta = "SELECT COUNT(*) FROM autorizacion WHERE solicitud = ?";
 
-        try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
-            statementInsert.setInt(1, solicitud.getNumeroSolicitud());
-            statementInsert.setString(2, solicitud.getTipo());
-            statementInsert.setDate(3, java.sql.Date.valueOf(solicitud.getFecha()));
-            statementInsert.setBoolean(4, solicitud.isAprovado());
-            statementInsert.executeUpdate();
+        try (PreparedStatement statementConsulta = connection.prepareStatement(consulta)) {
+            statementConsulta.setInt(1, solicitud.getNumeroSolicitud());
+            ResultSet resultSet = statementConsulta.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                solicitud.setAprovado(false);
+                solicitudEnviada = false;
+                return;
+            }
+
+            // Si no existe, realiza la inserción
+            solicitud.setAprovado(true);
+            solicitudEnviada = true;
+            String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
+                    + "VALUES (?, ?, ?, ?)";
+
+            try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
+                statementInsert.setInt(1, solicitud.getNumeroSolicitud());
+                statementInsert.setString(2, solicitud.getTipo());
+                statementInsert.setDate(3, java.sql.Date.valueOf(solicitud.getFecha()));
+                statementInsert.setBoolean(4, solicitud.isAprovado());
+                statementInsert.executeUpdate();
+
+            } catch (SQLException e) {
+                System.out.println("Error al insertar en la base de datos: " + e.getMessage());
+            }
+
         } catch (SQLException e) {
-            System.out.println("Error al insertar en la base de datos");
+            System.out.println("Error al verificar la existencia de la solicitud: " + e.getMessage());
         }
     }
 
@@ -158,4 +183,46 @@ public class conexionDB {
         }
 
     }
+
+    public void actualizarSaldoTarjeta(crearTarjeta tarjeta, movimientos mensaje) {
+        try {
+            String update = "UPDATE tarjeta SET saldo = ? WHERE numero = ?";
+
+            try (PreparedStatement statementUpdate = connection.prepareStatement(update)) {
+                statementUpdate.setDouble(1, tarjeta.getSaldo());
+                statementUpdate.setString(2, tarjeta.getNumero());
+
+                int rowsAffected = statementUpdate.executeUpdate(); // Ejecuta la actualización
+                if (rowsAffected > 0) {
+                    mensaje.mensaje();
+                } else {
+                    mensaje.mensajeError();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar el estado en la base de datos");
+        }
+    }
+
+    public void crearMovimiento(crearTarjeta tarjeta, movimiento movimientos) {
+        String insert = "INSERT INTO movimientos (tarjeta, fecha, descripcion, establecimiento, monto, tipo_movimiento) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
+            statementInsert.setString(1, movimientos.getTarjeta());
+            statementInsert.setString(2, movimientos.getFecha());
+            statementInsert.setString(3, movimientos.getDescripcion());
+            statementInsert.setString(4, movimientos.getEstablecimiento());
+            statementInsert.setDouble(5, movimientos.getMonto());
+            statementInsert.setString(6, movimientos.getMovimiento());
+            statementInsert.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error al insertar en la base de datos");
+        }
+    }
+
+    public boolean isSolicitudEnviada() {
+        return solicitudEnviada;
+    }
+
 }
