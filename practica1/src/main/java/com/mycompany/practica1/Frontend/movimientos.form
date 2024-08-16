@@ -124,13 +124,13 @@
                                   <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtMonto" min="-2" pref="276" max="-2" attributes="0"/>
-                                  <Component id="txtEstablecimiento" min="-2" pref="276" max="-2" attributes="0"/>
-                                  <Component id="txtMovimiento" min="-2" pref="276" max="-2" attributes="0"/>
-                                  <Component id="txtFecha" min="-2" pref="276" max="-2" attributes="0"/>
-                                  <Component id="txtTarjeta" min="-2" pref="276" max="-2" attributes="0"/>
-                                  <Component id="txtDescripcion" min="-2" pref="276" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="txtMonto" pref="276" max="32767" attributes="0"/>
+                                  <Component id="txtEstablecimiento" pref="276" max="32767" attributes="0"/>
+                                  <Component id="txtFecha" pref="276" max="32767" attributes="0"/>
+                                  <Component id="txtTarjeta" pref="276" max="32767" attributes="0"/>
+                                  <Component id="txtDescripcion" pref="276" max="32767" attributes="0"/>
+                                  <Component id="cbMovimiento" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -157,7 +157,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtMovimiento" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbMovimiento" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -224,8 +224,6 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtFecha">
         </Component>
-        <Component class="javax.swing.JTextField" name="txtMovimiento">
-        </Component>
         <Component class="javax.swing.JTextField" name="txtEstablecimiento">
         </Component>
         <Component class="javax.swing.JTextField" name="txtDescripcion">
@@ -239,6 +237,22 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistrarActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="cbMovimiento">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="CARGO"/>
+                <StringItem index="1" value="ABONO"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

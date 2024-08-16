@@ -123,6 +123,9 @@ public class cancelar extends javax.swing.JFrame {
             if (conexion.tarjetaExistente) {
                 if (tarjeta.cancelarTarjeta()) {
                     conexion.cancelarTarjeta(tarjeta, this);
+                    menuPrincipal menu = new menuPrincipal();
+                    this.setVisible(false);
+                    menu.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null, "TIENES SALDO PENDIENTE O LA TARJETA YA ESTA CANCELADA", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
