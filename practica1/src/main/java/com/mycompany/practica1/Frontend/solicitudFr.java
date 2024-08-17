@@ -5,11 +5,14 @@
 package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.crearSolicitud;
+import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.Date;
 
 /**
  *
@@ -24,6 +27,8 @@ public class solicitudFr extends javax.swing.JFrame {
 
     public solicitudFr() {
         initComponents();
+        fechaActual();
+        txtFecha.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -134,12 +139,14 @@ public class solicitudFr extends javax.swing.JFrame {
                                 .addGap(24, 24, 24)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane6)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
-                                .addComponent(jScrollPane3)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING))
                             .addComponent(cbTarjetas, 0, 253, Short.MAX_VALUE)
-                            .addComponent(jScrollPane7, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane3)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane7))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -233,13 +240,11 @@ public class solicitudFr extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-        // Crear una instancia de JFileChooser
         JFileChooser fileChooser = new JFileChooser();
 
-        // Establecer el modo de selección de archivos (solo archivos)
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        // Crear un filtro para archivos .txt
+        // Aceptar solo archivos .txt
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
         fileChooser.setFileFilter(filter);
 
@@ -248,13 +253,18 @@ public class solicitudFr extends javax.swing.JFrame {
 
         // Procesar la respuesta del usuario
         if (result == JFileChooser.APPROVE_OPTION) {
-            // Obtener el archivo seleccionado
             File selectedFile = fileChooser.getSelectedFile();
-            // Mostrar la ruta del archivo seleccionado
-            JOptionPane.showMessageDialog(this, "Archivo seleccionado: " + selectedFile.getAbsolutePath());
+            crearSolicitud solicitudTarjeta = new crearSolicitud();
+            leerArchivos leer = new leerArchivos();
+
+            if (leer.leerSolicitud(selectedFile.getAbsolutePath(), solicitudTarjeta)) {
+                ingresoSolicitud(solicitudTarjeta);
+            } else {
+                mensajes(5);
+            }
+
         } else {
-            // El usuario canceló la selección
-            JOptionPane.showMessageDialog(this, "Selección cancelada");
+            JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
 
@@ -300,8 +310,8 @@ public class solicitudFr extends javax.swing.JFrame {
         solicitud = new crearSolicitud(solicitudId, txtNombre.getText(), salario, txtDireccion.getText(), txtFecha.getText(),
                 cbTarjetas.getSelectedItem().toString());
         conexion = new conexionDB();
-        conexion.crearSolicitud(solicitud);
-        JOptionPane.showMessageDialog(null, "SOLICITUD ENVIADA");
+        conexion.crearSolicitud(solicitud, this);
+
 
     }//GEN-LAST:event_btnSolicitarActionPerformed
 
@@ -310,6 +320,59 @@ public class solicitudFr extends javax.swing.JFrame {
         this.setVisible(false);
         menu.setVisible(true);
     }//GEN-LAST:event_btnRegresarActionPerformed
+
+    private void ingresoSolicitud(crearSolicitud solicitud) {
+        txtSolicitud.setText(solicitud.getNumero() + "");
+        txtNombre.setText(solicitud.getNombre());
+        txtSalario.setText(solicitud.getSalario() + "");
+        txtDireccion.setText(solicitud.getDireccion());
+        txtFecha.setText(solicitud.getFecha());
+        if (solicitud.getTipo().equals("NACIONAL")) {
+            cbTarjetas.setSelectedIndex(0);
+        } else if (solicitud.getTipo().equals("REGIONAL")) {
+            cbTarjetas.setSelectedIndex(1);
+        } else if (solicitud.getTipo().equals("INTERNACIONAL")) {
+            cbTarjetas.setSelectedIndex(2);
+        }
+    }
+
+    private void fechaActual() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaActual = dateFormat.format(new Date());
+
+        txtFecha.setText(fechaActual);
+    }
+
+    public void mensajes(int tipo) {
+        switch (tipo) {
+            case 1:
+                JOptionPane.showMessageDialog(null, "LA SOLICITUD YA EXISTE, INGRESA UNA NUEVA");
+                reiniciarTxt();
+                break;
+            case 2:
+                JOptionPane.showMessageDialog(null, "NO SE PUDO INGRESAR LA SOLICITUD");
+                reiniciarTxt();
+                break;
+            case 3:
+                JOptionPane.showMessageDialog(null, "ERROR A LA HORA A LA HORA DE VERIFICAR LA EXISTENCIA DE LA SOLICITUD");
+                reiniciarTxt();
+                break;
+            case 4:
+                JOptionPane.showMessageDialog(null, "SOLICITUD ENVIADA");
+                reiniciarTxt();
+                break;
+            case 5:
+                JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+                break;
+        }
+    }
+
+    private void reiniciarTxt() {
+        txtSolicitud.setText("");
+        txtNombre.setText("");
+        txtDireccion.setText("");
+        txtSalario.setText("");
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

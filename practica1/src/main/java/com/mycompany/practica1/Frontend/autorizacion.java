@@ -5,6 +5,7 @@
 package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.autoTarjetas;
+import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.Backend.validarTarjetas;
 import com.mycompany.practica1.conexionDB.conexionDB;
 import java.io.File;
@@ -22,6 +23,7 @@ public class autorizacion extends javax.swing.JFrame {
     private conexionDB conexion;
     private validarTarjetas validar;
     private String nombre;
+    private int numero;
 
     public autorizacion() {
         initComponents();
@@ -177,14 +179,19 @@ public class autorizacion extends javax.swing.JFrame {
             autorizacion = new autoTarjetas();
             conexion = new conexionDB();
             conexion.consultarSolicitud(solicitud, autorizacion);
-            if (conexion.solicitudExistente) {
-                validar = new validarTarjetas(autorizacion, conexion);
-                validar.validacionTarjetas();
-                autorizado();
+            if (conexion.verificarSolicitud(autorizacion)) {
+                if (conexion.solicitudExistente) {
+                    validar = new validarTarjetas(autorizacion, conexion);
+                    validar.validacionTarjetas();
+                    autorizado();
 
+                } else {
+                    noExisteSolicitud();
+                }
             } else {
-                noExisteSolicitud();
+                JOptionPane.showMessageDialog(null, "NUMERO DE SOLICITUD YA REGISTRADO", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
+
         } catch (NumberFormatException ex) {
             // Si la conversión falla, muestra un mensaje de error
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UNA SOLICITUD VALIDA", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -210,15 +217,18 @@ public class autorizacion extends javax.swing.JFrame {
             // Obtener el archivo seleccionado
             File selectedFile = fileChooser.getSelectedFile();
             // Mostrar la ruta del archivo seleccionado
-            JOptionPane.showMessageDialog(this, "Archivo seleccionado: " + selectedFile.getAbsolutePath());
+            leerArchivos leer = new leerArchivos();
+            numero = leer.leerAutorizacion(selectedFile.getAbsolutePath());
+            if (numero == 2) {
+                formato();
+            } else {
+                ingresoAutorizacion(numero);
+            }
+
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     public void autorizado() {
-        if (autorizacion.getAutorizado() == 2) {
-            JOptionPane.showMessageDialog(null, "NUMERO DE SOLICITUD YA REGISTRADO");
-            return;
-        }
         boolean autoriazado = autorizacion.isAprovado();
         txtSolicitud.setText("");
         if (autoriazado) {
@@ -235,7 +245,14 @@ public class autorizacion extends javax.swing.JFrame {
 
     private void noExisteSolicitud() {
         JOptionPane.showMessageDialog(null, "SOLICITUD NO REGISTRADA");
+    }
 
+    private void ingresoAutorizacion(int numero) {
+        txtSolicitud.setText(numero + "");
+    }
+
+    private void formato() {
+        JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

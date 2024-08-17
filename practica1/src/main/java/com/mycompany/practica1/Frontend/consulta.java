@@ -5,8 +5,12 @@
 package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.crearTarjeta;
+import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -45,6 +49,10 @@ public class consulta extends javax.swing.JFrame {
         txtLimite = new javax.swing.JTextField();
         txtDireccion = new javax.swing.JTextField();
         txtEstado = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        txtSaldo = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("CONSULTA");
@@ -75,6 +83,7 @@ public class consulta extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         btnHtml.setText("GENERAR HTML");
+        btnHtml.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnHtml.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHtmlActionPerformed(evt);
@@ -105,6 +114,10 @@ public class consulta extends javax.swing.JFrame {
 
         txtEstado.setEnabled(false);
 
+        jLabel10.setText("SALDO:");
+
+        txtSaldo.setEnabled(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -115,7 +128,7 @@ public class consulta extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 267, Short.MAX_VALUE)
+                                .addGap(0, 238, Short.MAX_VALUE)
                                 .addComponent(btnHtml))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,6 +145,10 @@ public class consulta extends javax.swing.JFrame {
                         .addGap(33, 33, 33))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -172,10 +189,24 @@ public class consulta extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnHtml)
                 .addContainerGap())
         );
+
+        btnBuscar.setText("BUSCAR");
+        btnBuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("BUSCAR DOCUMENTO");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -194,7 +225,11 @@ public class consulta extends javax.swing.JFrame {
                         .addGap(54, 54, 54)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnConsultar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRegresar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(btnRegresar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel11)))
                 .addGap(31, 31, 31)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -210,9 +245,13 @@ public class consulta extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
                 .addComponent(txtTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnConsultar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnBuscar)
+                .addGap(37, 37, 37)
                 .addComponent(btnRegresar)
                 .addGap(26, 26, 26))
             .addGroup(layout.createSequentialGroup()
@@ -247,22 +286,67 @@ public class consulta extends javax.swing.JFrame {
             txtNombe.setText(tarjeta.getNombre());
             txtTipo.setText(tarjeta.getTipo());
             txtDireccion.setText(tarjeta.getDireccion());
-            txtLimite.setText(tarjeta.getLimite()+"");
+            txtLimite.setText(tarjeta.getLimite() + "");
+            txtSaldo.setText(tarjeta.getSaldo() + "");
             if (tarjeta.isEstado()) {
                 txtEstado.setText("ACTIVA");
             } else {
                 txtEstado.setText("INACTIVA");
             }
-            
+
         }
     }//GEN-LAST:event_btnConsultarActionPerformed
 
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        // Aceptar solo archivos .txt
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
+        fileChooser.setFileFilter(filter);
+
+        // Mostrar el file chooser y capturar la respuesta del usuario
+        int result = fileChooser.showOpenDialog(this);
+
+        // Procesar la respuesta del usuario
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            leerArchivos leer = new leerArchivos();            
+            tarjeta = new crearTarjeta();            
+            if (leer.leerConsulta(selectedFile.getAbsolutePath(), tarjeta)) {
+                txtTarjeta.setText(tarjeta.getNumero());
+                conexion = new conexionDB();
+                conexion.consultarTarjeta(txtTarjeta.getText(), tarjeta);
+                txtNumero.setText(tarjeta.getNumero());
+                txtNombe.setText(tarjeta.getNombre());
+                txtTipo.setText(tarjeta.getTipo());
+                txtDireccion.setText(tarjeta.getDireccion());
+                txtLimite.setText(tarjeta.getLimite() + "");
+                txtSaldo.setText(tarjeta.getSaldo() + "");
+                if (tarjeta.isEstado()) {
+                    txtEstado.setText("ACTIVA");
+                } else {
+                    txtEstado.setText("INACTIVA");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnConsultar;
     private javax.swing.JButton btnHtml;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -277,6 +361,7 @@ public class consulta extends javax.swing.JFrame {
     private javax.swing.JTextField txtLimite;
     private javax.swing.JTextField txtNombe;
     private javax.swing.JTextField txtNumero;
+    private javax.swing.JTextField txtSaldo;
     private javax.swing.JTextField txtTarjeta;
     private javax.swing.JTextField txtTipo;
     // End of variables declaration//GEN-END:variables
