@@ -10,12 +10,15 @@ import com.mycompany.practica1.Backend.crearTarjeta;
 import com.mycompany.practica1.Backend.movimiento;
 import com.mycompany.practica1.Frontend.cancelar;
 import com.mycompany.practica1.Frontend.movimientos;
+import com.mycompany.practica1.Frontend.solicitudFr;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -43,20 +46,36 @@ public class conexionDB {
         }
     }
 
-    public void crearSolicitud(crearSolicitud solicitud) {
+    public void crearSolicitud(crearSolicitud solicitud, solicitudFr mensaje) {
+        String select = "SELECT COUNT(*) FROM solicitud WHERE No_solicitud = ?";
         String insert = "INSERT INTO solicitud (No_solicitud, nombre, salario, tipo, fecha, direccion) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
-            statementInsert.setInt(1, solicitud.getNumero());
-            statementInsert.setString(2, solicitud.getNombre());
-            statementInsert.setDouble(3, solicitud.getSalario());
-            statementInsert.setString(4, solicitud.getTipo());
-            statementInsert.setDate(5, java.sql.Date.valueOf(solicitud.getFecha()));
-            statementInsert.setString(6, solicitud.getDireccion());
-            statementInsert.executeUpdate();
+        try (PreparedStatement statementSelect = connection.prepareStatement(select)) {
+            statementSelect.setInt(1, solicitud.getNumero());
+
+            ResultSet resultSet = statementSelect.executeQuery();
+            resultSet.next();
+            int count = resultSet.getInt(1);
+
+            if (count > 0) {
+                mensaje.mensajes(1);
+            } else {
+                try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
+                    statementInsert.setInt(1, solicitud.getNumero());
+                    statementInsert.setString(2, solicitud.getNombre());
+                    statementInsert.setDouble(3, solicitud.getSalario());
+                    statementInsert.setString(4, solicitud.getTipo());
+                    statementInsert.setDate(5, java.sql.Date.valueOf(solicitud.getFecha()));
+                    statementInsert.setString(6, solicitud.getDireccion());
+                    statementInsert.executeUpdate();
+                    mensaje.mensajes(4);
+                } catch (SQLException e) {
+                    mensaje.mensajes(2);
+                }
+            }
         } catch (SQLException e) {
-            System.out.println("Error al insertar en la base de datos");
+            mensaje.mensajes(3);
         }
     }
 
@@ -82,38 +101,23 @@ public class conexionDB {
     }
 
     public void crearAutorizacion(autoTarjetas solicitud) {
-        String consulta = "SELECT COUNT(*) FROM autorizacion WHERE solicitud = ?";
 
-        try (PreparedStatement statementConsulta = connection.prepareStatement(consulta)) {
-            statementConsulta.setInt(1, solicitud.getNumeroSolicitud());
-            ResultSet resultSet = statementConsulta.executeQuery();
+        solicitud.setAprovado(true);
+        solicitudEnviada = true;
+        String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
+                + "VALUES (?, ?, ?, ?)";
 
-            if (resultSet.next() && resultSet.getInt(1) > 0) {
-                solicitud.setAprovado(false);
-                solicitudEnviada = false;
-                return;
-            }
-
-            // Si no existe, realiza la inserción
-            solicitud.setAprovado(true);
-            solicitudEnviada = true;
-            String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
-                    + "VALUES (?, ?, ?, ?)";
-
-            try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
-                statementInsert.setInt(1, solicitud.getNumeroSolicitud());
-                statementInsert.setString(2, solicitud.getTipo());
-                statementInsert.setDate(3, java.sql.Date.valueOf(solicitud.getFecha()));
-                statementInsert.setBoolean(4, solicitud.isAprovado());
-                statementInsert.executeUpdate();
-
-            } catch (SQLException e) {
-                System.out.println("Error al insertar en la base de datos: " + e.getMessage());
-            }
+        try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
+            statementInsert.setInt(1, solicitud.getNumeroSolicitud());
+            statementInsert.setString(2, solicitud.getTipo());
+            statementInsert.setDate(3, java.sql.Date.valueOf(solicitud.getFecha()));
+            statementInsert.setBoolean(4, solicitud.isAprovado());
+            statementInsert.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Error al verificar la existencia de la solicitud: " + e.getMessage());
+            System.out.println("Error al insertar en la base de datos: " + e.getMessage());
         }
+
     }
 
     public void crearTarjeta(crearTarjeta tarjeta) {
@@ -136,6 +140,25 @@ public class conexionDB {
 
     }
 
+    public boolean verificarSolicitud(autoTarjetas tarjeta) {
+        String consulta = "SELECT COUNT(*) FROM autorizacion WHERE solicitud = ?";
+
+        try (PreparedStatement statementConsulta = connection.prepareStatement(consulta)) {
+            statementConsulta.setInt(1, tarjeta.getNumeroSolicitud());
+            ResultSet resultSet = statementConsulta.executeQuery();
+
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                tarjeta.setAprovado(false);
+                solicitudEnviada = false;
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar la existencia de la solicitud: " + e.getMessage());
+        }
+
+        return true;
+    }
+
     public void consultarTarjeta(String numeroTarjeta, crearTarjeta tarjeta) {
         try {
             String select = "SELECT * FROM tarjeta WHERE numero = " + numeroTarjeta;
@@ -151,11 +174,7 @@ public class conexionDB {
                 tarjeta.setDireccion(resultSet.getString("direccion"));
                 tarjeta.setFecha(resultSet.getString("fecha"));
                 tarjeta.setSaldo(resultSet.getDouble("saldo"));
-                if (tarjeta.getNombre() == null) {
-                    tarjetaExistente = false;
-                } else {
-                    tarjetaExistente = true;
-                }
+                tarjetaExistente = tarjeta.getNombre() != null;
 
             }
 
@@ -166,12 +185,17 @@ public class conexionDB {
 
     public void cancelarTarjeta(crearTarjeta tarjeta, cancelar mensaje) {
         try {
-            String update = "UPDATE tarjeta SET estado = false WHERE numero = ?";
+            String update = "UPDATE tarjeta SET estado = false, fecha = ? WHERE numero = ?";
 
             try (PreparedStatement statementUpdate = connection.prepareStatement(update)) {
-                statementUpdate.setString(1, tarjeta.getNumero());
+                LocalDate fechaActual = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String fechaFormateada = fechaActual.format(formatter);
 
-                int rowsAffected = statementUpdate.executeUpdate(); // Ejecuta la actualización
+                statementUpdate.setString(1, fechaFormateada);
+                statementUpdate.setString(2, tarjeta.getNumero());
+
+                int rowsAffected = statementUpdate.executeUpdate();
                 if (rowsAffected > 0) {
                     mensaje.mensaje();
                 } else {
@@ -181,7 +205,6 @@ public class conexionDB {
         } catch (SQLException e) {
             System.out.println("Error al actualizar el estado en la base de datos");
         }
-
     }
 
     public void actualizarSaldoTarjeta(crearTarjeta tarjeta, movimientos mensaje) {
