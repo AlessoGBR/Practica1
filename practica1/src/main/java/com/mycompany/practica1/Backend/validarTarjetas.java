@@ -40,37 +40,34 @@ public class validarTarjetas {
                 } else {
                     auto.setAprovado(true);
                     autorizarTarjeta();
-                }   break;
+                }
+                break;
             case "REGIONAL":
                 if (limite <= LIMITE_REGIONAL) {
                     auto.setAprovado(false);
                 } else {
                     auto.setAprovado(true);
                     autorizarTarjeta();
-                }   break;
+                }
+                break;
             case "INTERNACIONAL":
                 if (limite <= LIMITE_INTERNACIONAL) {
                     auto.setAprovado(false);
                 } else {
                     auto.setAprovado(true);
-                    
-                }   break;
+
+                }
+                break;
             default:
                 break;
         }
-        
-        autorizarTarjeta();
 
     }
 
     private void autorizarTarjeta() {
         conexion.crearAutorizacion(auto);
-        if (auto.isAprovado()) {
-            auto.setAutorizado(1);
-            crearTarjeta();
-        } else {
-            auto.setAutorizado(2);
-        }
+        auto.setAutorizado(1);
+        crearTarjeta();
 
     }
 
@@ -103,9 +100,7 @@ public class validarTarjetas {
             tarjeta.setLimite(20000);
             tarjeta.setNumero(numeroTarjeta);
         }
-
         conexion.crearTarjeta(tarjeta);
-
     }
 
     public String getNumeroTarjeta() {

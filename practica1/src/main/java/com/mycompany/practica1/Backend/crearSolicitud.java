@@ -16,6 +16,10 @@ public class crearSolicitud {
     private String direccion;
     private String fecha;
     private String tipo;
+    
+    public crearSolicitud(){
+        
+    }
 
     public crearSolicitud(int numero, String nombre, double salario, String direccion, String fecha, String tipo) {
         this.numero = numero;
@@ -24,15 +28,6 @@ public class crearSolicitud {
         this.direccion = direccion;
         this.fecha = fecha;
         this.tipo = tipo;
-    }
-    
-    public void imprimir(){
-        System.out.println(getNumero());
-        System.out.println(getNombre()  );
-        System.out.println(getSalario());
-        System.out.println(getDireccion()   );
-        System.out.println(getFecha());
-        System.out.println(getTipo());
     }
 
     public int getNumero() {
