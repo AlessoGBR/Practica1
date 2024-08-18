@@ -7,8 +7,8 @@ package com.mycompany.practica1.Frontend;
 import com.mycompany.practica1.Backend.autoTarjetas;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.Backend.validarTarjetas;
+import com.mycompany.practica1.conexionDB.conexionDB;
 import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
-import com.mycompany.practica1.conexionDB.consultarSolicitudDB;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -22,6 +22,7 @@ public class autorizacion extends javax.swing.JFrame {
 
     private autoTarjetas autorizacion;
     private consultaTarjetaDB consultaDB;
+    private conexionDB conexion;
     private validarTarjetas validar;
     private String nombre;
     private int numero;
@@ -179,9 +180,11 @@ public class autorizacion extends javax.swing.JFrame {
             // realizamos las operaciones para ver si la solicitud es apta para la aprovacion de la tarjeta
             autorizacion = new autoTarjetas();
             consultaDB = new consultaTarjetaDB();
-            consultarSolicitudDB consulta = new consultarSolicitudDB();
+            consultaDB.consultarSolicitud(solicitud, autorizacion);
+            //conexion = new conexionDB();
+            //conexion.consultarSolicitud(solicitud, autorizacion);
             if (consultaDB.verificarSolicitud(autorizacion)) {
-                if (consulta.solicitudExistente) {
+                if (consultaDB.solicitudExistente) {
                     validar = new validarTarjetas(autorizacion, consultaDB);
                     validar.validacionTarjetas();
                     autorizado();

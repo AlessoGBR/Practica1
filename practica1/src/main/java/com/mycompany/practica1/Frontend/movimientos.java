@@ -289,11 +289,15 @@ public class movimientos extends javax.swing.JFrame {
         //Creamos el movimiento
         movimiento movimientos = new movimiento();
         if (consulta.tarjetaExistente) {
-            verificarMovimientos vrMovimiento = new verificarMovimientos(tarjeta);
-            vrMovimiento.movimientoValido(cbMovimiento.getSelectedItem().toString(), monto, this);
-            consulta.actualizarSaldoTarjeta(tarjeta, this);
-            actualizarMovimiento(movimientos);
-            consulta.crearMovimiento(tarjeta, movimientos);
+            if (consulta.tarjetaActiva) {
+                verificarMovimientos vrMovimiento = new verificarMovimientos(tarjeta);
+                vrMovimiento.movimientoValido(cbMovimiento.getSelectedItem().toString(), monto, this);
+                consulta.actualizarSaldoTarjeta(tarjeta, this);
+                actualizarMovimiento(movimientos);
+                consulta.crearMovimiento(tarjeta, movimientos);
+            } else {
+                mensajeTarjeta();
+            }
         } else {
             JOptionPane.showMessageDialog(null, "TARJETA NO ENCONTRADA", "ERROR", JOptionPane.ERROR_MESSAGE);
         }

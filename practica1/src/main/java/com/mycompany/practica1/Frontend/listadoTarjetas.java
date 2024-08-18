@@ -5,7 +5,6 @@
 package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.leerArchivos;
-import com.mycompany.practica1.conexionDB.conexionDB;
 import com.mycompany.practica1.conexionDB.reporteMovimientosDB;
 import java.awt.BorderLayout;
 import java.io.File;
@@ -56,8 +55,9 @@ public class listadoTarjetas extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
+        btnHtml = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("LISTADO DE TARJETAS");
         setResizable(false);
 
@@ -87,7 +87,7 @@ public class listadoTarjetas extends javax.swing.JFrame {
 
         cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NINGUNO", "NACIONAL", "REGIONAL", "INTERNACIONAL" }));
 
-        jLabel5.setText("MONTO");
+        jLabel5.setText("MONTO LIMITE");
 
         jLabel6.setText("FECHA INICIAL");
 
@@ -110,15 +110,20 @@ public class listadoTarjetas extends javax.swing.JFrame {
 
         jLabel9.setText("NOMBRE");
 
+        btnHtml.setText("GENERAR HTML");
+        btnHtml.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHtml.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHtmlActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(btnRegresar))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -151,7 +156,12 @@ public class listadoTarjetas extends javax.swing.JFrame {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnAplicar)
                                 .addGap(68, 68, 68)))
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addComponent(btnRegresar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnHtml)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -198,7 +208,9 @@ public class listadoTarjetas extends javax.swing.JFrame {
                         .addComponent(btnAplicar)
                         .addGap(0, 52, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRegresar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRegresar)
+                    .addComponent(btnHtml))
                 .addContainerGap())
         );
 
@@ -260,6 +272,10 @@ public class listadoTarjetas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnHtmlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHtmlActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHtmlActionPerformed
 
     private void crearTabla() {
         DefaultTableModel model = new DefaultTableModel(null, columnas);
@@ -330,6 +346,7 @@ public class listadoTarjetas extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAplicar;
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnHtml;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JComboBox<String> cbEstado;
     private javax.swing.JComboBox<String> cbTipo;
