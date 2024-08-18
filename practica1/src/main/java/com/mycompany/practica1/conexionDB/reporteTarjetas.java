@@ -64,25 +64,26 @@ public class reporteTarjetas {
                 // Obtener el tipo de tarjeta y calcular el interés basado en el tipo
                 String tipoTarjeta = resultSet.getString("tipo");
                 double monto = resultSet.getDouble("monto");
+                double saldoDB = resultSet.getDouble("saldo");
                 interesNuevo = 0.0;
 
                 if (tipoMovimiento.equals("CARGO")) {
                     switch (tipoTarjeta) {
                         case "NACIONAL":
-                            interesNuevo = monto * 0.012;
+                            interesNuevo = saldoDB * 0.012;
                             break;
                         case "REGIONAL":
-                            interesNuevo = monto * 0.023;
+                            interesNuevo = saldoDB * 0.023;
                             break;
                         case "INTERNACIONAL":
-                            interesNuevo = monto * 0.0375;
+                            interesNuevo = saldoDB * 0.0375;
                             break;
                     }
                 }
 
                 datosTabla[index][5] = resultSet.getString("tipo_movimiento");
-                datosTabla[index][6] = Double.toString(interesNuevo);
-                datosTabla[index][7] = Double.toString(resultSet.getDouble("saldo"));
+                datosTabla[index][6] = Double.toString(resultSet.getDouble("saldo"));
+                datosTabla[index][7] = Double.toString(interesNuevo);                
 
                 index++;
             }

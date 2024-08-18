@@ -23,33 +23,28 @@ public class verificarMovimientos {
 
     public void movimientoValido(String tipoCargo, double monto, movimientos mensajes) {
 
-        if (tarjeta.isEstado()) {
-            if (tipoCargo.equals("ABONO")) {
-                if (tarjeta.getSaldo() == 0) {
-                    mensajes.mensajeAlDia();
-                } else {
-                    abono = tarjeta.getSaldo() - monto;
-                    tarjeta.setSaldo(abono);
-                    mensajes.mensajeAbono(tarjeta.getSaldo());
-                }
-            } else if (tipoCargo.equals("CARGO")) {
-                if (monto > tarjeta.getLimite()) {
-                    mensajes.mensajeCargoMax();
-                } else {
-                    cargo = tarjeta.getSaldo() + monto;
-                    if (cargo > tarjeta.getLimite()) {
-                        mensajes.mensajeLimite();
-                    } else {
-                        tarjeta.setSaldo(cargo);
-                        mensajes.mensajeCargo(tarjeta.getSaldo(), tarjeta.getLimite());
-                    }
-
-                }
+        if (tipoCargo.equals("ABONO")) {
+            if (tarjeta.getSaldo() == 0) {
+                mensajes.mensajeAlDia();
+            } else {
+                abono = tarjeta.getSaldo() - monto;
+                tarjeta.setSaldo(abono);
+                mensajes.mensajeAbono(tarjeta.getSaldo());
             }
-        } else {
-            mensajes.mensajeTarjeta();
-        }
+        } else if (tipoCargo.equals("CARGO")) {
+            if (monto > tarjeta.getLimite()) {
+                mensajes.mensajeCargoMax();
+            } else {
+                cargo = tarjeta.getSaldo() + monto;
+                if (cargo > tarjeta.getLimite()) {
+                    mensajes.mensajeLimite();
+                } else {
+                    tarjeta.setSaldo(cargo);
+                    mensajes.mensajeCargo(tarjeta.getSaldo(), tarjeta.getLimite());
+                }
 
+            }
+        }
     }
 
 }

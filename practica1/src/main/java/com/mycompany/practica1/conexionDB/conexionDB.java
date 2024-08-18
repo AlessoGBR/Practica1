@@ -4,9 +4,14 @@
  */
 package com.mycompany.practica1.conexionDB;
 
+import com.mycompany.practica1.Backend.autoTarjetas;
+import com.mycompany.practica1.Backend.crearTarjeta;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -18,6 +23,8 @@ public class conexionDB {
     private static final String USER = "root";
     private static final String PASSWORD = "26359";
     public Connection connection;
+    public boolean solicitudExistente;
+    public boolean solicitudEnviada;
 
     public conexionDB() {
         conectar();

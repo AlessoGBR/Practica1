@@ -27,6 +27,7 @@ public class consultaTarjetaDB {
     public boolean tarjetaExistente;
     public boolean solicitudEnviada;
     public boolean solicitudExistente;
+    public boolean tarjetaActiva;
 
     public consultaTarjetaDB() {
         conexionDB conexion = new conexionDB();
@@ -54,9 +55,55 @@ public class consultaTarjetaDB {
         }
     }
 
+    public boolean verificarSolicitud(autoTarjetas tarjeta) {
+        String consulta = "SELECT 1 FROM autorizacion WHERE solicitud = ? LIMIT 1";
+
+        try (PreparedStatement statementConsulta = connection.prepareStatement(consulta)) {
+            int numeroSolicitud = tarjeta.getNumeroSolicitud();
+
+            // Establecer el número de solicitud en la consulta
+            statementConsulta.setInt(1, numeroSolicitud);
+
+            // Ejecutar la consulta
+            ResultSet resultSet = statementConsulta.executeQuery();
+
+            // Si se encuentra al menos un resultado, la solicitud existe
+            if (resultSet.next()) {
+                // Actualizar el estado de la tarjeta
+                tarjeta.setAprovado(false);
+                solicitudEnviada = false;
+                return false; // La solicitud ya existe
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar la existencia de la solicitud");
+        }
+
+        return true; // Retornar true si no se encontró la solicitud
+    }
+
     public void crearAutorizacion(autoTarjetas solicitud) {
 
         solicitud.setAprovado(true);
+        solicitudEnviada = true;
+        String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
+                + "VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement statementInsert = connection.prepareStatement(insert)) {
+            statementInsert.setInt(1, solicitud.getNumeroSolicitud());
+            statementInsert.setString(2, solicitud.getTipo());
+            statementInsert.setDate(3, java.sql.Date.valueOf(solicitud.getFecha()));
+            statementInsert.setBoolean(4, solicitud.isAprovado());
+            statementInsert.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Error al insertar en la base de datos: " + e.getMessage());
+        }
+
+    }
+
+    public void crearAutorizacionDenegada(autoTarjetas solicitud) {
+
+        solicitud.setAprovado(false);
         solicitudEnviada = true;
         String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
                 + "VALUES (?, ?, ?, ?)";
@@ -94,25 +141,6 @@ public class consultaTarjetaDB {
 
     }
 
-    public boolean verificarSolicitud(autoTarjetas tarjeta) {
-        String consulta = "SELECT COUNT(*) FROM autorizacion WHERE solicitud = ?";
-
-        try (PreparedStatement statementConsulta = connection.prepareStatement(consulta)) {
-            statementConsulta.setInt(1, tarjeta.getNumeroSolicitud());
-            ResultSet resultSet = statementConsulta.executeQuery();
-
-            if (resultSet.next() && resultSet.getInt(1) > 0) {
-                tarjeta.setAprovado(false);
-                solicitudEnviada = false;
-                return false;
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al verificar la existencia de la solicitud: " + e.getMessage());
-        }
-
-        return true;
-    }
-
     public void crearMovimiento(crearTarjeta tarjeta, movimiento movimientos) {
         String insert = "INSERT INTO movimientos (tarjeta, fecha, descripcion, establecimiento, monto, tipo_movimiento) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
@@ -146,7 +174,7 @@ public class consultaTarjetaDB {
                 tarjeta.setFecha(resultSet.getString("fecha"));
                 tarjeta.setSaldo(resultSet.getDouble("saldo"));
                 tarjetaExistente = tarjeta.getNombre() != null;
-
+                tarjetaActiva = tarjeta.isEstado();
             }
 
         } catch (SQLException e) {

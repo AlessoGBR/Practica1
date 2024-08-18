@@ -25,6 +25,7 @@ public class validarTarjetas {
 
     private autoTarjetas auto;
     private consultaTarjetaDB consulta;
+    //private conexionDB consultaPR;
     private String numeroTarjeta;
 
     public validarTarjetas(autoTarjetas auto, consultaTarjetaDB consulta) {
@@ -38,6 +39,7 @@ public class validarTarjetas {
             case "NACIONAL":
                 if (limite <= LIMITE_NACIONAL) {
                     auto.setAprovado(false);
+                    denegarTarjeta();
                 } else {
                     auto.setAprovado(true);
                     autorizarTarjeta();
@@ -46,6 +48,7 @@ public class validarTarjetas {
             case "REGIONAL":
                 if (limite <= LIMITE_REGIONAL) {
                     auto.setAprovado(false);
+                    denegarTarjeta();
                 } else {
                     auto.setAprovado(true);
                     autorizarTarjeta();
@@ -54,9 +57,10 @@ public class validarTarjetas {
             case "INTERNACIONAL":
                 if (limite <= LIMITE_INTERNACIONAL) {
                     auto.setAprovado(false);
+                    denegarTarjeta();
                 } else {
                     auto.setAprovado(true);
-
+                    autorizarTarjeta();
                 }
                 break;
             default:
@@ -70,6 +74,10 @@ public class validarTarjetas {
         auto.setAutorizado(1);
         crearTarjeta();
 
+    }
+    
+    private void denegarTarjeta(){
+        consulta.crearAutorizacionDenegada(auto);
     }
 
     private void crearTarjeta() {

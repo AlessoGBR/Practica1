@@ -24,24 +24,28 @@ public class consultarSolicitudDB {
         this.connection = conexion.connection;
     }
 
-    public void consultarSolicitud(int numeroSoli, autoTarjetas auto) {
+    public void consultarSolicitud(String numeroSoli, autoTarjetas auto) {
         try {
             String select = "SELECT * FROM solicitud WHERE No_solicitud = " + numeroSoli;
             Statement statementInsert = connection.createStatement();
             ResultSet resultSet = statementInsert.executeQuery(select);
 
-            while (resultSet.next()) {
+            if (resultSet.next()) { // Verifica si existe alguna fila en el ResultSet
+                // Si existe, asigna los valores a la instancia de autoTarjetas
                 auto.setNumeroSolicitud(resultSet.getInt("No_solicitud"));
                 auto.setNombre(resultSet.getString("nombre"));
                 auto.setSalario(resultSet.getDouble("salario"));
                 auto.setTipo(resultSet.getString("tipo"));
                 auto.setFecha(resultSet.getString("fecha"));
                 auto.setDireccion(resultSet.getString("direccion"));
-                solicitudExistente = auto.getNombre() != null;
+                solicitudExistente = true; // Establece que la solicitud existe
+            } else {
+                solicitudExistente = false; // Si no hay filas, la solicitud no existe
+                System.out.println("La solicitud con el número " + numeroSoli + " no existe.");
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al consultar a la DB");
+            System.out.println("Error al consultar a la DB: " + e.getMessage());
         }
     }
 
