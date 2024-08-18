@@ -6,6 +6,7 @@ package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.reporteTarjetas;
 import java.awt.BorderLayout;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -25,6 +26,7 @@ public class estadoCuenta extends javax.swing.JFrame {
     private JTable table;
     private double saldo = 0;
     private double interes = 0;
+    private reporteTarjetas reporteDB;
 
     /**
      * Creates new form estadoCuenta
@@ -197,7 +199,7 @@ public class estadoCuenta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarActionPerformed
-        conexionDB conexion = new conexionDB();
+        reporteDB = new reporteTarjetas();
         try {
             String stringSaldo = txtSaldo.getText();
             String stringInteres = txtInteres.getText();
@@ -217,7 +219,7 @@ public class estadoCuenta extends javax.swing.JFrame {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        String[][] datosTabla = conexion.buscarMovimientos(txtTarjeta.getText(), cbTipo.getSelectedItem().toString(),
+        String[][] datosTabla = reporteDB.buscarMovimientos(txtTarjeta.getText(), cbTipo.getSelectedItem().toString(),
                 saldo, interes, this);
         DefaultTableModel model = new DefaultTableModel(datosTabla, columnas);
 

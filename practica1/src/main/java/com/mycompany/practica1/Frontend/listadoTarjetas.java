@@ -4,9 +4,9 @@
  */
 package com.mycompany.practica1.Frontend;
 
-import com.mycompany.practica1.Backend.crearTarjeta;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.reporteMovimientosDB;
 import java.awt.BorderLayout;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -26,6 +26,7 @@ public class listadoTarjetas extends javax.swing.JFrame {
     private JTable table;
     private String estado;
     private double monto;
+    private reporteMovimientosDB reportes;
 
     public listadoTarjetas() {
         initComponents();
@@ -212,7 +213,7 @@ public class listadoTarjetas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarActionPerformed
-        conexionDB conexion = new conexionDB();
+        reportes = new reporteMovimientosDB();
         try {
             String stringMonto = txtMonto.getText().trim();
             if (!stringMonto.isEmpty()) {
@@ -227,7 +228,7 @@ public class listadoTarjetas extends javax.swing.JFrame {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        String[][] datosTabla = conexion.buscarTarjetas(cbTipo.getSelectedItem().toString(), monto,
+        String[][] datosTabla = reportes.buscarTarjetas(cbTipo.getSelectedItem().toString(), monto,
                 txtFechaInicial.getText(), txtFechaFinal.getText(), cbEstado.getSelectedIndex(), txtNombre.getText(), this);
         DefaultTableModel model = new DefaultTableModel(datosTabla, columnas);
 

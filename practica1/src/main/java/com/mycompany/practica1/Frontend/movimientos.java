@@ -9,6 +9,7 @@ import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.Backend.movimiento;
 import com.mycompany.practica1.Backend.verificarMovimientos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -242,8 +243,8 @@ public class movimientos extends javax.swing.JFrame {
                 actualizarCampos(movimientos);
             } else {
                 JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
-            }            
-            
+            }
+
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -280,20 +281,19 @@ public class movimientos extends javax.swing.JFrame {
         } else if (cbMovimiento.getSelectedItem().toString().equals("ABONO")) {
             movimiento = false;
         }
-        //Creamos la conexion hacia la base de datos
-        conexionDB conexion = new conexionDB();
         //Creamos la tarjeta
         crearTarjeta tarjeta = new crearTarjeta();
         //Consultamos hacia la base de datos
-        conexion.consultarTarjeta(txtTarjeta.getText(), tarjeta);
+        consultaTarjetaDB consulta = new consultaTarjetaDB();
+        consulta.consultarTarjeta(txtTarjeta.getText(), tarjeta);
         //Creamos el movimiento
         movimiento movimientos = new movimiento();
-        if (conexion.tarjetaExistente) {
+        if (consulta.tarjetaExistente) {
             verificarMovimientos vrMovimiento = new verificarMovimientos(tarjeta);
             vrMovimiento.movimientoValido(cbMovimiento.getSelectedItem().toString(), monto, this);
-            conexion.actualizarSaldoTarjeta(tarjeta, this);
+            consulta.actualizarSaldoTarjeta(tarjeta, this);
             actualizarMovimiento(movimientos);
-            conexion.crearMovimiento(tarjeta, movimientos);
+            consulta.crearMovimiento(tarjeta, movimientos);
         } else {
             JOptionPane.showMessageDialog(null, "TARJETA NO ENCONTRADA", "ERROR", JOptionPane.ERROR_MESSAGE);
         }

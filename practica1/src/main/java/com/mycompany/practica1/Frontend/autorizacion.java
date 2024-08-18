@@ -7,7 +7,8 @@ package com.mycompany.practica1.Frontend;
 import com.mycompany.practica1.Backend.autoTarjetas;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.Backend.validarTarjetas;
-import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
+import com.mycompany.practica1.conexionDB.consultarSolicitudDB;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -20,7 +21,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class autorizacion extends javax.swing.JFrame {
 
     private autoTarjetas autorizacion;
-    private conexionDB conexion;
+    private consultaTarjetaDB consultaDB;
     private validarTarjetas validar;
     private String nombre;
     private int numero;
@@ -177,11 +178,11 @@ public class autorizacion extends javax.swing.JFrame {
             // Si la conversión es exitosa, puedes continuar con el procesamiento
             // realizamos las operaciones para ver si la solicitud es apta para la aprovacion de la tarjeta
             autorizacion = new autoTarjetas();
-            conexion = new conexionDB();
-            conexion.consultarSolicitud(solicitud, autorizacion);
-            if (conexion.verificarSolicitud(autorizacion)) {
-                if (conexion.solicitudExistente) {
-                    validar = new validarTarjetas(autorizacion, conexion);
+            consultaDB = new consultaTarjetaDB();
+            consultarSolicitudDB consulta = new consultarSolicitudDB();
+            if (consultaDB.verificarSolicitud(autorizacion)) {
+                if (consulta.solicitudExistente) {
+                    validar = new validarTarjetas(autorizacion, consultaDB);
                     validar.validacionTarjetas();
                     autorizado();
 

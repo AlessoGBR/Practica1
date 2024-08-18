@@ -7,6 +7,7 @@ package com.mycompany.practica1.Frontend;
 import com.mycompany.practica1.Backend.crearTarjeta;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -20,6 +21,7 @@ public class cancelar extends javax.swing.JFrame {
 
     private conexionDB conexion;
     private crearTarjeta tarjeta;
+    private consultaTarjetaDB consulta;
 
     private int cancelacion;
 
@@ -248,8 +250,8 @@ public class cancelar extends javax.swing.JFrame {
             leerArchivos leer = new leerArchivos();
             tarjeta = new crearTarjeta();
             if (leer.leerCancelacion(selectedFile.getAbsolutePath(), tarjeta)) {
-                conexion = new conexionDB();
-                conexion.consultarTarjeta(tarjeta.getNumero(), tarjeta);
+                consulta = new consultaTarjetaDB();
+                consulta.consultarTarjeta(tarjeta.getNumero(), tarjeta);
                 txtNumero.setText(tarjeta.getNumero());
                 txtNumeroF.setText(tarjeta.getNumero());
                 txtNombre.setText(tarjeta.getNombre());
@@ -284,13 +286,13 @@ public class cancelar extends javax.swing.JFrame {
 
         // Evaluar la opción seleccionada
         if (option == JOptionPane.YES_OPTION) {
-            conexion = new conexionDB();
+            consulta = new consultaTarjetaDB();
             tarjeta = new crearTarjeta();
-            conexion.consultarTarjeta(txtNumero.getText(), tarjeta);
+            consulta.consultarTarjeta(txtNumero.getText(), tarjeta);
 
-            if (conexion.tarjetaExistente) {
+            if (consulta.tarjetaExistente) {
                 if (tarjeta.cancelarTarjeta()) {
-                    conexion.cancelarTarjeta(tarjeta, this);
+                    consulta.cancelarTarjeta(tarjeta, this);
                 } else {
                     JOptionPane.showMessageDialog(null, "TIENES SALDO PENDIENTE O LA TARJETA YA ESTA CANCELADA", "ERROR", JOptionPane.ERROR_MESSAGE);
                     borrar();
@@ -310,10 +312,10 @@ public class cancelar extends javax.swing.JFrame {
             return;
         }
         if (txtNumero.getText().matches("\\d+")) {
-            conexion = new conexionDB();
+            consulta = new consultaTarjetaDB();
             tarjeta = new crearTarjeta();
-            conexion.consultarTarjeta(txtNumero.getText(), tarjeta);
-            if (conexion.tarjetaExistente) {
+            consulta.consultarTarjeta(txtNumero.getText(), tarjeta);
+            if (consulta.tarjetaExistente) {
                 txtNumeroF.setText(tarjeta.getNumero());
                 txtNombre.setText(tarjeta.getNombre());
                 txtSaldo.setText(tarjeta.getSaldo() + "");
@@ -338,7 +340,7 @@ public class cancelar extends javax.swing.JFrame {
     public void mensaje() {
         JOptionPane.showMessageDialog(null, "LA TARJETA HA SIDO CANCELADA", "TARJETA", JOptionPane.INFORMATION_MESSAGE);
         borrar();
-    }   
+    }
 
     private void borrar() {
         txtNumero.setText("");

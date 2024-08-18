@@ -7,6 +7,7 @@ package com.mycompany.practica1.Frontend;
 import com.mycompany.practica1.Backend.crearTarjeta;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -18,7 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class consulta extends javax.swing.JFrame {
 
-    private conexionDB conexion;
+    private consultaTarjetaDB consulta;
     private crearTarjeta tarjeta;
 
     public consulta() {
@@ -279,9 +280,9 @@ public class consulta extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE EL NUMERO DE TARJETA", "ERROR", JOptionPane.ERROR_MESSAGE);
 
         } else {
-            conexion = new conexionDB();
+            consulta = new consultaTarjetaDB();
             tarjeta = new crearTarjeta();
-            conexion.consultarTarjeta(txtTarjeta.getText(), tarjeta);
+            consulta.consultarTarjeta(txtTarjeta.getText(), tarjeta);
             txtNumero.setText(tarjeta.getNumero());
             txtNombe.setText(tarjeta.getNombre());
             txtTipo.setText(tarjeta.getTipo());
@@ -316,8 +317,8 @@ public class consulta extends javax.swing.JFrame {
             tarjeta = new crearTarjeta();            
             if (leer.leerConsulta(selectedFile.getAbsolutePath(), tarjeta)) {
                 txtTarjeta.setText(tarjeta.getNumero());
-                conexion = new conexionDB();
-                conexion.consultarTarjeta(txtTarjeta.getText(), tarjeta);
+                consulta = new consultaTarjetaDB();
+                consulta.consultarTarjeta(txtTarjeta.getText(), tarjeta);
                 txtNumero.setText(tarjeta.getNumero());
                 txtNombe.setText(tarjeta.getNombre());
                 txtTipo.setText(tarjeta.getTipo());

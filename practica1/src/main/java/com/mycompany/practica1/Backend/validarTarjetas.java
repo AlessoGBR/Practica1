@@ -5,6 +5,7 @@
 package com.mycompany.practica1.Backend;
 
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
 import java.util.Random;
 
 /**
@@ -23,12 +24,12 @@ public class validarTarjetas {
     private double limite;
 
     private autoTarjetas auto;
-    private conexionDB conexion;
+    private consultaTarjetaDB consulta;
     private String numeroTarjeta;
 
-    public validarTarjetas(autoTarjetas auto, conexionDB conexion) {
+    public validarTarjetas(autoTarjetas auto, consultaTarjetaDB consulta) {
         this.auto = auto;
-        this.conexion = conexion;
+        this.consulta = consulta;
     }
 
     public void validacionTarjetas() {
@@ -65,7 +66,7 @@ public class validarTarjetas {
     }
 
     private void autorizarTarjeta() {
-        conexion.crearAutorizacion(auto);
+        consulta.crearAutorizacion(auto);
         auto.setAutorizado(1);
         crearTarjeta();
 
@@ -100,7 +101,7 @@ public class validarTarjetas {
             tarjeta.setLimite(20000);
             tarjeta.setNumero(numeroTarjeta);
         }
-        conexion.crearTarjeta(tarjeta);
+        consulta.crearTarjeta(tarjeta);
     }
 
     public String getNumeroTarjeta() {

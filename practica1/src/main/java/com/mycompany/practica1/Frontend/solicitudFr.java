@@ -7,6 +7,7 @@ package com.mycompany.practica1.Frontend;
 import com.mycompany.practica1.Backend.crearSolicitud;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.crearSolicitudDB;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import javax.swing.JFileChooser;
@@ -309,9 +310,8 @@ public class solicitudFr extends javax.swing.JFrame {
 
         solicitud = new crearSolicitud(solicitudId, txtNombre.getText(), salario, txtDireccion.getText(), txtFecha.getText(),
                 cbTarjetas.getSelectedItem().toString());
-        conexion = new conexionDB();
-        conexion.crearSolicitud(solicitud, this);
-
+        crearSolicitudDB solicitudDB = new crearSolicitudDB();
+        solicitudDB.crearSolicitud(solicitud, this);
 
     }//GEN-LAST:event_btnSolicitarActionPerformed
 

@@ -6,6 +6,7 @@ package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.conexionDB;
+import com.mycompany.practica1.conexionDB.reportesSolicitud;
 import java.awt.BorderLayout;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -25,6 +26,7 @@ public class listadoSolicitudes extends javax.swing.JFrame {
     private JTable table;
     private boolean estado;
     private double salario;
+    private reportesSolicitud reportesDB;
 
     /**
      * Creates new form listadoSolicitudes
@@ -221,7 +223,7 @@ public class listadoSolicitudes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarActionPerformed
-        conexionDB conexion = new conexionDB();
+        reportesDB = new reportesSolicitud();
         try {
             String salarioTexto = txtSalario.getText().trim();
             if (!salarioTexto.isEmpty()) {
@@ -237,7 +239,7 @@ public class listadoSolicitudes extends javax.swing.JFrame {
             return;
         }
 
-        String[][] datosTabla = conexion.buscarAutorizacionesConSolicitud(
+        String[][] datosTabla = reportesDB.buscarAutorizacionesConSolicitud(
                 txtFechaInicio.getText(),
                 txtFechaFinal.getText(),
                 cbTipo.getSelectedItem().toString(),
