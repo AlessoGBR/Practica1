@@ -160,7 +160,9 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        
+        reportes reportes = new reportes();
+        this.setVisible(false);
+        reportes.setVisible(true);
     }//GEN-LAST:event_btnReportesActionPerformed
 
 
