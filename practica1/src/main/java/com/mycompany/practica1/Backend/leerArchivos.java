@@ -4,6 +4,9 @@
  */
 package com.mycompany.practica1.Backend;
 
+import com.mycompany.practica1.Frontend.estadoCuenta;
+import com.mycompany.practica1.Frontend.listadoSolicitudes;
+import com.mycompany.practica1.Frontend.listadoTarjetas;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -175,10 +178,136 @@ public class leerArchivos {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error al leer el archivo" );
+            System.out.println("Error al leer el archivo");
         } catch (NumberFormatException e) {
             System.out.println("Error al convertir un valor numérico");
         }
-        return false; 
+        return false;
+    }
+
+    public void leerListadoTarjeta(String rutaArchivo, listadoTarjetas tarjetas) {
+        String tipo = "";
+        String monto = "";
+        String fechaInicio = "";
+        String fechaFin = "";
+        String estado = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                if (linea.startsWith("LISTADO_TARJETAS")) {
+                    // Elimina el prefijo y los paréntesis
+                    linea = linea.replace("LISTADO_TARJETAS(", "").replace(");", "");
+
+                    // Divide la línea en partes usando la coma como delimitador
+                    String[] partes = linea.split(",");
+
+                    // Asigna valores a las variables, manejando posibles valores vacíos
+                    if (partes.length > 0) {
+                        tipo = partes[0].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 1) {
+                        monto = partes[1].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 2) {
+                        fechaInicio = partes[2].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 3) {
+                        fechaFin = partes[3].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 4) {
+                        estado = partes[4].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+
+                    fechaInicio = convertirFecha(fechaInicio);
+                    fechaFin = convertirFecha(fechaFin);
+                    tarjetas.llenarCampos(tipo, monto, fechaInicio, fechaFin, estado);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo");
+        }
+    }
+
+    public void leerListadoSolicitudes(String rutaArchivo, listadoSolicitudes solicitudes) {
+        String tipo = "";
+        String salario = "";
+        String fechaInicio = "";
+        String fechaFin = "";
+        String estado = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                if (linea.startsWith("LISTADO_SOLICITUDES")) {
+                    // Elimina el prefijo y los paréntesis
+                    linea = linea.replace("LISTADO_SOLICITUDES(", "").replace(");", "");
+
+                    // Divide la línea en partes usando la coma como delimitador
+                    String[] partes = linea.split(",");
+
+                    // Asigna valores a las variables, manejando posibles valores vacíos
+                    if (partes.length > 0) {
+                        fechaInicio = partes[0].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 1) {
+                        fechaFin = partes[1].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 2) {
+                        tipo = partes[2].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 3) {
+                        salario = partes[3].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+
+                    if (partes.length > 4) {
+                        estado = partes[4].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+
+                    fechaInicio = convertirFecha(fechaInicio);
+                    fechaFin = convertirFecha(fechaFin);
+                    solicitudes.llenarCampos(tipo, salario, fechaInicio, fechaFin, estado);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo");
+        }
+    }
+
+    public void leerListadoMovimientos(String rutaArchivo, estadoCuenta movimientos) {
+        String numero = "";
+        String tipo = "";
+        String saldo = "";
+        String interes = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                if (linea.startsWith("ESTADO_CUENTA")) {
+                    // Elimina el prefijo y los paréntesis
+                    linea = linea.replace("ESTADO_CUENTA(", "").replace(");", "");
+
+                    // Divide la línea en partes usando la coma como delimitador
+                    String[] partes = linea.split(",");
+
+                    // Asigna valores a las variables, manejando posibles valores vacíos
+                    if (partes.length > 0) {
+                        numero = partes[0].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 1) {
+                        tipo = partes[1].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 2) {
+                        saldo = partes[2].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    if (partes.length > 3) {
+                        interes = partes[3].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
+                    }
+                    movimientos.llenarCampos(numero, tipo, saldo, interes);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo");
+        }
     }
 }

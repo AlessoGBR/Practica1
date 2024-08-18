@@ -5,10 +5,13 @@
 package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.crearTarjeta;
+import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.Backend.movimiento;
 import com.mycompany.practica1.Backend.verificarMovimientos;
 import com.mycompany.practica1.conexionDB.conexionDB;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -27,6 +30,8 @@ public class movimientos extends javax.swing.JFrame {
      */
     public movimientos() {
         initComponents();
+        fechaActual();
+        txtFecha.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -53,7 +58,7 @@ public class movimientos extends javax.swing.JFrame {
         cbMovimiento = new javax.swing.JComboBox<>();
         btnRegresar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("MOVIMIENTOS");
         setResizable(false);
 
@@ -221,36 +226,43 @@ public class movimientos extends javax.swing.JFrame {
         // Crear una instancia de JFileChooser
         JFileChooser fileChooser = new JFileChooser();
 
-        // Establecer el modo de selección de archivos (solo archivos)
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        // Crear un filtro para archivos .txt
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de texto", "txt");
         fileChooser.setFileFilter(filter);
 
-        // Mostrar el file chooser y capturar la respuesta del usuario
         int result = fileChooser.showOpenDialog(this);
 
-        // Procesar la respuesta del usuario
         if (result == JFileChooser.APPROVE_OPTION) {
             // Obtener el archivo seleccionado
             File selectedFile = fileChooser.getSelectedFile();
-            // Mostrar la ruta del archivo seleccionado
-            JOptionPane.showMessageDialog(this, "Archivo seleccionado: " + selectedFile.getAbsolutePath());
+            leerArchivos leer = new leerArchivos();
+            movimiento movimientos = new movimiento();
+            if (leer.leerMovimientos(selectedFile.getAbsolutePath(), movimientos)) {
+                actualizarCampos(movimientos);
+            } else {
+                JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }            
+            
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (txtTarjeta.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE EL NUMERO DE TARJETA", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         } else if (txtFecha.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UNA FECHA CORRECTA", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         } else if (txtDescripcion.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UNA DESCRIPCION", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         } else if (txtEstablecimiento.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE EL CODIGO DEL ESTABLECIMIENTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         } else if (txtMonto.getText().length() == 0) {
             JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE UN MONTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         try {
@@ -268,9 +280,13 @@ public class movimientos extends javax.swing.JFrame {
         } else if (cbMovimiento.getSelectedItem().toString().equals("ABONO")) {
             movimiento = false;
         }
+        //Creamos la conexion hacia la base de datos
         conexionDB conexion = new conexionDB();
+        //Creamos la tarjeta
         crearTarjeta tarjeta = new crearTarjeta();
+        //Consultamos hacia la base de datos
         conexion.consultarTarjeta(txtTarjeta.getText(), tarjeta);
+        //Creamos el movimiento
         movimiento movimientos = new movimiento();
         if (conexion.tarjetaExistente) {
             verificarMovimientos vrMovimiento = new verificarMovimientos(tarjeta);
@@ -281,8 +297,15 @@ public class movimientos extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "TARJETA NO ENCONTRADA", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
-
+        limiparDatos();
     }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void fechaActual() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaActual = dateFormat.format(new Date());
+
+        txtFecha.setText(fechaActual);
+    }
 
     public void mensaje() {
         JOptionPane.showMessageDialog(null, "MOVIMIENTO REALIZADO");
@@ -299,6 +322,19 @@ public class movimientos extends javax.swing.JFrame {
         movimiento.setMovimiento(cbMovimiento.getSelectedItem().toString());
         movimiento.setMonto(monto);
         movimiento.setFecha(txtFecha.getText());
+    }
+
+    private void actualizarCampos(movimiento movimiento) {
+        txtTarjeta.setText(movimiento.getTarjeta());
+        txtFecha.setText(movimiento.getFecha());
+        if (movimiento.getMovimiento().equals("CARGO")) {
+            cbMovimiento.setSelectedIndex(0);
+        } else if (movimiento.getMovimiento().equals("ABONO")) {
+            cbMovimiento.setSelectedIndex(1);
+        }
+        txtDescripcion.setText(movimiento.getDescripcion());
+        txtEstablecimiento.setText(movimiento.getEstablecimiento());
+        txtMonto.setText(movimiento.getMonto() + "");
     }
 
     public void mensajeAlDia() {
@@ -319,11 +355,19 @@ public class movimientos extends javax.swing.JFrame {
 
     public void mensajeCargo(double saldo, double limite) {
         double total = limite - saldo;
-        JOptionPane.showMessageDialog(null, "CARGO REALIZADO,SALDO PENDIENTE: " + total );
+        JOptionPane.showMessageDialog(null, "CARGO REALIZADO,SALDO PENDIENTE: " + total);
     }
-    
-    public void mensajeTarjeta(){
+
+    public void mensajeTarjeta() {
         JOptionPane.showMessageDialog(null, "TARJETA INACTIVA NO PUEDES REALIZAR MOVIMIENTOS", "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void limiparDatos() {
+        txtTarjeta.setText("");
+        txtDescripcion.setText("");
+        txtEstablecimiento.setText("");
+        txtMonto.setText("");
+        fechaActual();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -347,4 +391,5 @@ public class movimientos extends javax.swing.JFrame {
     private javax.swing.JTextField txtMonto;
     private javax.swing.JTextField txtTarjeta;
     // End of variables declaration//GEN-END:variables
+
 }
