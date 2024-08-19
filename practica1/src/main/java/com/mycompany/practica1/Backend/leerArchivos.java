@@ -50,6 +50,8 @@ public class leerArchivos {
                     solicitud.setSalario(salario);
                     solicitud.setDireccion(direccion);
                     return true;
+                } else {
+                    
                 }
 
             }
@@ -120,6 +122,8 @@ public class leerArchivos {
                     tarjeta.setNumero(numeroTarjeta);
 
                     return true;
+                } else {
+                
                 }
             }
         } catch (IOException e) {
@@ -141,6 +145,8 @@ public class leerArchivos {
                     tarjeta.setNumero(numeroTarjeta);
 
                     return true;
+                } else {
+                    
                 }
             }
         } catch (IOException e) {
@@ -175,6 +181,8 @@ public class leerArchivos {
                     movimiento.setMonto(monto);
 
                     return true;
+                } else {
+                    
                 }
             }
         } catch (IOException e) {
@@ -222,6 +230,8 @@ public class leerArchivos {
                     fechaInicio = convertirFecha(fechaInicio);
                     fechaFin = convertirFecha(fechaFin);
                     tarjetas.llenarCampos(tipo, monto, fechaInicio, fechaFin, estado);
+                } else {
+                    tarjetas.formatoIncorrecto();
                 }
             }
         } catch (IOException e) {
@@ -267,6 +277,8 @@ public class leerArchivos {
                     fechaInicio = convertirFecha(fechaInicio);
                     fechaFin = convertirFecha(fechaFin);
                     solicitudes.llenarCampos(tipo, salario, fechaInicio, fechaFin, estado);
+                } else {
+                    solicitudes.formatoIncorrecto();
                 }
             }
         } catch (IOException e) {
@@ -304,6 +316,8 @@ public class leerArchivos {
                         interes = partes[3].trim().replace("\"", "").replace("“", "").replace("”", "").replace(" ", "");
                     }
                     movimientos.llenarCampos(numero, tipo, saldo, interes);
+                } else {
+                    movimientos.formatoIncorrecto();
                 }
             }
         } catch (IOException e) {

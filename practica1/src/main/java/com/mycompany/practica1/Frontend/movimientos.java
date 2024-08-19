@@ -8,7 +8,6 @@ import com.mycompany.practica1.Backend.crearTarjeta;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.Backend.movimiento;
 import com.mycompany.practica1.Backend.verificarMovimientos;
-import com.mycompany.practica1.conexionDB.conexionDB;
 import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -280,6 +279,15 @@ public class movimientos extends javax.swing.JFrame {
             movimiento = true;
         } else if (cbMovimiento.getSelectedItem().toString().equals("ABONO")) {
             movimiento = false;
+        }
+        
+        if (txtDescripcion.getText().length() >= 200) {
+            JOptionPane.showMessageDialog(null, "DESCRIPCION DEMASIADO LARGA", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtEstablecimiento.getText().length() >=20 ) {
+            JOptionPane.showMessageDialog(null, "ESTABLECIMIENTO DEMASIADO LARGO", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         //Creamos la tarjeta
         crearTarjeta tarjeta = new crearTarjeta();

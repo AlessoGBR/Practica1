@@ -24,22 +24,11 @@ public class crearTarjeta {
     }
 
     public boolean cancelarTarjeta() {
-        if (getSaldo() > 0 || isEstado() == false) {            
+        if (getSaldo() > 0 || isEstado() == false) {
             return false;
         } else {
             return true;
         }
-    }
-
-    public void imiprimirDatos() {
-        System.out.println(getNumero());
-        System.out.println(getNombre());
-        System.out.println(getLimite());
-        System.out.println(getTipo());
-        System.out.println(isEstado());
-        System.out.println(getDireccion());
-        System.out.println(getFecha());
-        System.out.println(getSaldo());
     }
 
     public String getNumero() {

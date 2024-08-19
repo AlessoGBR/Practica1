@@ -22,7 +22,7 @@ public class verificarMovimientos {
     }
 
     public void movimientoValido(String tipoCargo, double monto, movimientos mensajes) {
-
+        // Verifica que tipo de movimiento realiza y si se puede efectuar
         if (tipoCargo.equals("ABONO")) {
             if (tarjeta.getSaldo() == 0) {
                 mensajes.mensajeAlDia();

@@ -4,8 +4,8 @@
  */
 package com.mycompany.practica1.Frontend;
 
+import com.mycompany.practica1.Backend.generarHtml;
 import com.mycompany.practica1.Backend.leerArchivos;
-import com.mycompany.practica1.conexionDB.conexionDB;
 import com.mycompany.practica1.conexionDB.reportesSolicitud;
 import java.awt.BorderLayout;
 import java.io.File;
@@ -24,9 +24,10 @@ public class listadoSolicitudes extends javax.swing.JFrame {
 
     private final String[] columnas = {"NUMERO", "NOMBRE", "SALARIO", "TIPO", "DIRECCION", "FECHA", "ESTADO"};
     private JTable table;
-    private boolean estado;
     private double salario;
     private reportesSolicitud reportesDB;
+    private String[][] datosTabla;
+    private String pathArchivo;
 
     /**
      * Creates new form listadoSolicitudes
@@ -34,6 +35,7 @@ public class listadoSolicitudes extends javax.swing.JFrame {
     public listadoSolicitudes() {
         initComponents();
         crearTabla();
+        btnHtml.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -127,36 +129,40 @@ public class listadoSolicitudes extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(btnRegresar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnHtml))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(44, 44, 44)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(8, 8, 8)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel3)
-                                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel4)
-                                            .addComponent(txtFechaInicio)
-                                            .addComponent(jLabel5)
-                                            .addComponent(txtFechaFinal)
-                                            .addComponent(jLabel6)
-                                            .addComponent(jLabel7)
-                                            .addComponent(txtSalario)
-                                            .addComponent(jLabel8)
-                                            .addComponent(cbEstado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(cbTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(85, 85, 85)
-                                .addComponent(btnBuscar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(87, 87, 87)
-                                .addComponent(btnAplicar)))
-                        .addGap(18, 18, 18)
+                                        .addGap(44, 44, 44)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel1)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(8, 8, 8)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(jLabel3)
+                                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(jLabel4)
+                                                    .addComponent(txtFechaInicio)
+                                                    .addComponent(jLabel5)
+                                                    .addComponent(txtFechaFinal)
+                                                    .addComponent(jLabel6)
+                                                    .addComponent(jLabel7)
+                                                    .addComponent(txtSalario)
+                                                    .addComponent(jLabel8)
+                                                    .addComponent(cbEstado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(cbTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(85, 85, 85)
+                                        .addComponent(btnBuscar))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(87, 87, 87)
+                                        .addComponent(btnAplicar)))
+                                .addGap(18, 18, 18))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnHtml)
+                                .addGap(45, 45, 45)))
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 908, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -193,10 +199,10 @@ public class listadoSolicitudes extends javax.swing.JFrame {
                 .addComponent(cbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(btnAplicar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 98, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegresar)
-                    .addComponent(btnHtml))
+                .addGap(33, 33, 33)
+                .addComponent(btnHtml)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addComponent(btnRegresar)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -231,6 +237,7 @@ public class listadoSolicitudes extends javax.swing.JFrame {
             File selectedFile = fileChooser.getSelectedFile();
             leerArchivos leer = new leerArchivos();
             leer.leerListadoSolicitudes(selectedFile.getAbsolutePath(), this);
+            pathArchivo = selectedFile.getParent();
         } else {
             JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
         }
@@ -253,7 +260,7 @@ public class listadoSolicitudes extends javax.swing.JFrame {
             return;
         }
 
-        String[][] datosTabla = reportesDB.buscarAutorizacionesConSolicitud(
+        datosTabla = reportesDB.buscarAutorizacionesConSolicitud(
                 txtFechaInicio.getText(),
                 txtFechaFinal.getText(),
                 cbTipo.getSelectedItem().toString(),
@@ -265,13 +272,39 @@ public class listadoSolicitudes extends javax.swing.JFrame {
 
         // Crear la JTable con el modelo
         table.setModel(model);
-
+        btnHtml.setVisible(true);
         jPanel1.repaint();
         limpiar();
     }//GEN-LAST:event_btnAplicarActionPerformed
 
     private void btnHtmlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHtmlActionPerformed
-        // TODO add your handling code here:
+        if (pathArchivo != null) {
+            generarHtml generar = new generarHtml(pathArchivo);
+            generar.generarReporteSolicitud(pathArchivo, datosTabla, "LISTADO SOLICITUDES", "REPORTE CUENTAS.html", this);
+        } else {
+            JFileChooser fileChooser = new JFileChooser();
+
+            // Configurar el filtro para que solo muestre archivos HTML
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos HTML", "html", "htm");
+            fileChooser.setFileFilter(filter);
+
+            // Mostrar el cuadro de diálogo para seleccionar la ubicación y el nombre del archivo
+            fileChooser.setDialogTitle("Seleccionar ubicación para guardar el archivo HTML");
+            int result = fileChooser.showSaveDialog(null);
+
+            // Verificar si el usuario seleccionó una ubicación
+            if (result == JFileChooser.APPROVE_OPTION) {
+                // Obtener el archivo seleccionado
+                File selectedFile = fileChooser.getSelectedFile();
+
+                // Obtener la ruta del directorio que contiene el archivo
+                String directoryPath = selectedFile.getParent();
+
+                // Crear el nombre del archivo HTML (asegurarse de que tenga la extensión .html)
+                generarHtml generar = new generarHtml(pathArchivo);
+                generar.generarReporteSolicitud(directoryPath, datosTabla, "LISTADO SOLICITUDES", selectedFile.getName() + ".html", this);
+            }
+        }
     }//GEN-LAST:event_btnHtmlActionPerformed
 
     private void crearTabla() {
@@ -306,9 +339,23 @@ public class listadoSolicitudes extends javax.swing.JFrame {
 
     }
 
+    public void archivoGenerado() {
+        JOptionPane.showMessageDialog(null, "SE GUARDO EL ARCHIVO");
+    }
+
+    public void archivoNoGuardado() {
+        JOptionPane.showMessageDialog(null, "NO SE PUDO GENERAR EL ARCHIVO", "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
     public void noHayElementos() {
         JOptionPane.showMessageDialog(null, "NO SE ENCONTRARON RESULTADOS");
+        pathArchivo = null;
         limpiar();
+    }
+
+    public void formatoIncorrecto() {
+        JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+        pathArchivo = null;
     }
 
     private void limpiar() {

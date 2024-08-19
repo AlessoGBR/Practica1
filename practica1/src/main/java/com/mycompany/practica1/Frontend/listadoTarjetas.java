@@ -4,6 +4,7 @@
  */
 package com.mycompany.practica1.Frontend;
 
+import com.mycompany.practica1.Backend.generarHtml;
 import com.mycompany.practica1.Backend.leerArchivos;
 import com.mycompany.practica1.conexionDB.reporteMovimientosDB;
 import java.awt.BorderLayout;
@@ -23,13 +24,15 @@ public class listadoTarjetas extends javax.swing.JFrame {
 
     private final String[] columnas = {"NUMERO", "NOMBRE", "LIMITE", "TIPO", "ESTADO", "DIRECCION", "FECHA", "SALDO"};
     private JTable table;
-    private String estado;
+    private String pathArchivo;
     private double monto;
     private reporteMovimientosDB reportes;
+    private String[][] datosTabla;
 
     public listadoTarjetas() {
         initComponents();
         crearTabla();
+        btnHtml.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -154,14 +157,18 @@ public class listadoTarjetas extends javax.swing.JFrame {
                                 .addGap(18, 18, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnAplicar)
-                                .addGap(68, 68, 68)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(btnAplicar)
+                                        .addGap(68, 68, 68))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(btnHtml)
+                                        .addGap(34, 34, 34)))))
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(68, 68, 68)
                         .addComponent(btnRegresar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnHtml)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -206,11 +213,11 @@ public class listadoTarjetas extends javax.swing.JFrame {
                         .addComponent(cbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnAplicar)
-                        .addGap(0, 52, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnHtml)
+                        .addGap(0, 9, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegresar)
-                    .addComponent(btnHtml))
+                .addComponent(btnRegresar)
                 .addContainerGap())
         );
 
@@ -219,9 +226,9 @@ public class listadoTarjetas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        reportes reportes = new reportes();
+        reportes reportesFr = new reportes();
         this.setVisible(false);
-        reportes.setVisible(true);
+        reportesFr.setVisible(true);
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarActionPerformed
@@ -240,13 +247,13 @@ public class listadoTarjetas extends javax.swing.JFrame {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        String[][] datosTabla = reportes.buscarTarjetas(cbTipo.getSelectedItem().toString(), monto,
+        datosTabla = reportes.buscarTarjetas(cbTipo.getSelectedItem().toString(), monto,
                 txtFechaInicial.getText(), txtFechaFinal.getText(), cbEstado.getSelectedIndex(), txtNombre.getText(), this);
         DefaultTableModel model = new DefaultTableModel(datosTabla, columnas);
 
         // Crear la JTable con el modelo
         table.setModel(model);
-
+        btnHtml.setVisible(true);
         jPanel1.repaint();
         limpiar();
     }//GEN-LAST:event_btnAplicarActionPerformed
@@ -268,13 +275,40 @@ public class listadoTarjetas extends javax.swing.JFrame {
             File selectedFile = fileChooser.getSelectedFile();
             leerArchivos leer = new leerArchivos();
             leer.leerListadoTarjeta(selectedFile.getAbsolutePath(), this);
+            pathArchivo = selectedFile.getParent();
         } else {
             JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnHtmlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHtmlActionPerformed
-        // TODO add your handling code here:
+        if (pathArchivo != null) {
+            generarHtml generar = new generarHtml(pathArchivo);
+            generar.generarReporteTarjetas(pathArchivo, datosTabla, "TARJETAS", "REPORTE CUENTAS.html", this);
+        } else {
+            JFileChooser fileChooser = new JFileChooser();
+
+            // Configurar el filtro para que solo muestre archivos HTML
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos HTML", "html", "htm");
+            fileChooser.setFileFilter(filter);
+
+            // Mostrar el cuadro de diálogo para seleccionar la ubicación y el nombre del archivo
+            fileChooser.setDialogTitle("Seleccionar ubicación para guardar el archivo HTML");
+            int result = fileChooser.showSaveDialog(null);
+
+            // Verificar si el usuario seleccionó una ubicación
+            if (result == JFileChooser.APPROVE_OPTION) {
+                // Obtener el archivo seleccionado
+                File selectedFile = fileChooser.getSelectedFile();
+
+                // Obtener la ruta del directorio que contiene el archivo
+                String directoryPath = selectedFile.getParent();
+
+                // Crear el nombre del archivo HTML (asegurarse de que tenga la extensión .html)
+                generarHtml generar = new generarHtml(pathArchivo);
+                generar.generarReporteTarjetas(directoryPath, datosTabla, "TARJETAS", selectedFile.getName() + ".html", this);
+            }
+        }
     }//GEN-LAST:event_btnHtmlActionPerformed
 
     private void crearTabla() {
@@ -332,17 +366,30 @@ public class listadoTarjetas extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "NO SE ENCONTRARON RESULTADOS");
         limpiar();
     }
+
+    public void formatoIncorrecto() {
+        JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+        pathArchivo = null;
+    }
     
-    private void limpiar(){
+    public void archivoGenerado() {
+        JOptionPane.showMessageDialog(null, "SE GUARDO EL ARCHIVO");
+    }
+
+    public void archivoNoGuardado() {
+        JOptionPane.showMessageDialog(null, "NO SE PUDO GENERAR EL ARCHIVO", "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void limpiar() {
         txtFechaFinal.setText("");
         txtFechaInicial.setText("");
         txtNombre.setText("");
         txtMonto.setText("");
         cbEstado.setSelectedIndex(0);
         cbTipo.setSelectedIndex(0);
-        
+
     }
-            
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAplicar;
     private javax.swing.JButton btnBuscar;

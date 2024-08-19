@@ -5,8 +5,8 @@
 package com.mycompany.practica1.Frontend;
 
 import com.mycompany.practica1.Backend.crearTarjeta;
+import com.mycompany.practica1.Backend.generarHtml;
 import com.mycompany.practica1.Backend.leerArchivos;
-import com.mycompany.practica1.conexionDB.conexionDB;
 import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -21,6 +21,7 @@ public class consulta extends javax.swing.JFrame {
 
     private consultaTarjetaDB consulta;
     private crearTarjeta tarjeta;
+    private String pathArchivo;
 
     public consulta() {
         initComponents();
@@ -272,7 +273,44 @@ public class consulta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnHtmlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHtmlActionPerformed
-        
+
+        if (txtTarjeta.getText().length() != 0) {
+            if (pathArchivo != null) {
+                pathArchivo = pathArchivo + "/";
+                generarHtml generar = new generarHtml(pathArchivo);
+                generar.generarConsulta(txtNumero.getText(), txtTipo.getText(), txtLimite.getText(), txtNombe.getText(),
+                        txtDireccion.getText(), txtEstado.getText(), txtSaldo.getText(), "CONSULTA.html", this);
+            } else {
+                JFileChooser fileChooser = new JFileChooser();
+
+                // Configurar el filtro para que solo muestre archivos HTML
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos HTML", "html", "htm");
+                fileChooser.setFileFilter(filter);
+
+                // Mostrar el cuadro de diálogo para seleccionar la ubicación y el nombre del archivo
+                fileChooser.setDialogTitle("Seleccionar ubicación para guardar el archivo HTML");
+                int result = fileChooser.showSaveDialog(null);
+
+                // Verificar si el usuario seleccionó una ubicación
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // Obtener el archivo seleccionado
+                    File selectedFile = fileChooser.getSelectedFile();
+
+                    // Obtener la ruta del directorio que contiene el archivo
+                    String directoryPath = selectedFile.getParent();
+
+                    // Crear el nombre del archivo HTML (asegurarse de que tenga la extensión .html)
+                    generarHtml generar = new generarHtml(directoryPath);
+                    generar.generarConsulta(txtNumero.getText(), txtTipo.getText(), txtLimite.getText(), txtNombe.getText(),
+                            txtDireccion.getText(), txtEstado.getText(), txtSaldo.getText(), selectedFile.getName() + ".html", this);
+                }
+            }
+            limpiar();
+        } else {
+            sinTarjeta();
+        }
+
+
     }//GEN-LAST:event_btnHtmlActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
@@ -283,16 +321,24 @@ public class consulta extends javax.swing.JFrame {
             consulta = new consultaTarjetaDB();
             tarjeta = new crearTarjeta();
             consulta.consultarTarjeta(txtTarjeta.getText(), tarjeta);
-            txtNumero.setText(tarjeta.getNumero());
-            txtNombe.setText(tarjeta.getNombre());
-            txtTipo.setText(tarjeta.getTipo());
-            txtDireccion.setText(tarjeta.getDireccion());
-            txtLimite.setText(tarjeta.getLimite() + "");
-            txtSaldo.setText(tarjeta.getSaldo() + "");
-            if (tarjeta.isEstado()) {
-                txtEstado.setText("ACTIVA");
+            if (consulta.tarjetaExistente) {
+                if (consulta.tarjetaExistente) {
+                    txtNumero.setText(tarjeta.getNumero());
+                    txtNombe.setText(tarjeta.getNombre());
+                    txtTipo.setText(tarjeta.getTipo());
+                    txtDireccion.setText(tarjeta.getDireccion());
+                    txtLimite.setText(tarjeta.getLimite() + "");
+                    txtSaldo.setText(tarjeta.getSaldo() + "");
+                    if (tarjeta.isEstado()) {
+                        txtEstado.setText("ACTIVA");
+                    } else {
+                        txtEstado.setText("INACTIVA");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "TARJETA INEXISTENTE", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
-                txtEstado.setText("INACTIVA");
+                JOptionPane.showMessageDialog(null, "TARJETA NO ENCONTRADA", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
 
         }
@@ -313,8 +359,9 @@ public class consulta extends javax.swing.JFrame {
         // Procesar la respuesta del usuario
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            leerArchivos leer = new leerArchivos();            
-            tarjeta = new crearTarjeta();            
+            leerArchivos leer = new leerArchivos();
+            tarjeta = new crearTarjeta();
+            pathArchivo = selectedFile.getParent();
             if (leer.leerConsulta(selectedFile.getAbsolutePath(), tarjeta)) {
                 txtTarjeta.setText(tarjeta.getNumero());
                 consulta = new consultaTarjetaDB();
@@ -339,6 +386,28 @@ public class consulta extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
+    public void archivoGenerado() {
+        JOptionPane.showMessageDialog(null, "SE GUARDO EL ARCHIVO");
+    }
+
+    private void sinTarjeta() {
+        JOptionPane.showMessageDialog(null, "POR FAVOR INGRESE EL NUMERO DE TARJETA", "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void archivoNoGuardado() {
+        JOptionPane.showMessageDialog(null, "NO SE PUDO GENERAR EL ARCHIVO", "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void limpiar() {
+        txtNumero.setText("");
+        txtTarjeta.setText("");
+        txtNombe.setText("");
+        txtDireccion.setText("");
+        txtLimite.setText("");
+        txtTipo.setText("");
+        txtEstado.setText("");
+        txtSaldo.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;

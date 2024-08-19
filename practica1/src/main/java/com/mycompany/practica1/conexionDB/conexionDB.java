@@ -4,14 +4,9 @@
  */
 package com.mycompany.practica1.conexionDB;
 
-import com.mycompany.practica1.Backend.autoTarjetas;
-import com.mycompany.practica1.Backend.crearTarjeta;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *
@@ -31,6 +26,7 @@ public class conexionDB {
     }
 
     private void conectar() {
+        // Creamos la conexion con la base de datos
         try {
             connection = DriverManager.getConnection(URL_MYSQL, USER, PASSWORD);
         } catch (SQLException e) {

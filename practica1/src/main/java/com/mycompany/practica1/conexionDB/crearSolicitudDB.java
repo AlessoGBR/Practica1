@@ -25,6 +25,7 @@ public class crearSolicitudDB {
     }
 
     public void crearSolicitud(crearSolicitud solicitud, solicitudFr mensaje) {
+        //Buscamos los datos de la solicitud y tambien los ingresamos a la base de datos
         String select = "SELECT COUNT(*) FROM solicitud WHERE No_solicitud = ?";
         String insert = "INSERT INTO solicitud (No_solicitud, nombre, salario, tipo, fecha, direccion) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";

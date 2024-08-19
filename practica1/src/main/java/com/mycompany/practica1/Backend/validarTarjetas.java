@@ -4,7 +4,6 @@
  */
 package com.mycompany.practica1.Backend;
 
-import com.mycompany.practica1.conexionDB.conexionDB;
 import com.mycompany.practica1.conexionDB.consultaTarjetaDB;
 import java.util.Random;
 
@@ -25,7 +24,6 @@ public class validarTarjetas {
 
     private autoTarjetas auto;
     private consultaTarjetaDB consulta;
-    //private conexionDB consultaPR;
     private String numeroTarjeta;
 
     public validarTarjetas(autoTarjetas auto, consultaTarjetaDB consulta) {
@@ -81,7 +79,7 @@ public class validarTarjetas {
     }
 
     private void crearTarjeta() {
-
+        //Crea una nueva tarjeta con los los numeros bases y genera 5 numeros aleatorios
         crearTarjeta tarjeta = new crearTarjeta();
         Random random = new Random();
         tarjeta.setNombre(auto.getNombre());

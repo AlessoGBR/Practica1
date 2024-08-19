@@ -308,6 +308,15 @@ public class solicitudFr extends javax.swing.JFrame {
             return;
         }
 
+        if (txtNombre.getText().length() >= 100) {
+            JOptionPane.showMessageDialog(null, "NOMBRE DEMASIADO LARGO", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtDireccion.getText().length() >= 150) {
+            JOptionPane.showMessageDialog(null, "DIRECCION DEMASIADA LARGA", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         solicitud = new crearSolicitud(solicitudId, txtNombre.getText(), salario, txtDireccion.getText(), txtFecha.getText(),
                 cbTarjetas.getSelectedItem().toString());
         crearSolicitudDB solicitudDB = new crearSolicitudDB();

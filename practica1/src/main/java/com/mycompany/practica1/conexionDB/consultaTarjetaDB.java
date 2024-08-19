@@ -35,6 +35,7 @@ public class consultaTarjetaDB {
     }
 
     public void consultarSolicitud(int numeroSoli, autoTarjetas auto) {
+        // Verficamos si existe una solicitud
         try {
             String select = "SELECT * FROM solicitud WHERE No_solicitud = " + numeroSoli;
             Statement statementInsert = connection.createStatement();
@@ -82,7 +83,7 @@ public class consultaTarjetaDB {
     }
 
     public void crearAutorizacion(autoTarjetas solicitud) {
-
+        // Insertamos una nueva autorizacion
         solicitud.setAprovado(true);
         solicitudEnviada = true;
         String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
@@ -102,7 +103,7 @@ public class consultaTarjetaDB {
     }
 
     public void crearAutorizacionDenegada(autoTarjetas solicitud) {
-
+        //Denegamos una solicitud en la base de datos
         solicitud.setAprovado(false);
         solicitudEnviada = true;
         String insert = "INSERT INTO autorizacion (solicitud, tipo, fecha, aprovada) "
@@ -122,6 +123,7 @@ public class consultaTarjetaDB {
     }
 
     public void crearTarjeta(crearTarjeta tarjeta) {
+        //Insertamos una nueva tarjeta en la base 
         String insert = "INSERT INTO tarjeta (numero, nombre, limite, tipo, estado, direccion, fecha, saldo) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -142,6 +144,7 @@ public class consultaTarjetaDB {
     }
 
     public void crearMovimiento(crearTarjeta tarjeta, movimiento movimientos) {
+        //Insertamos un nuevo movimiento en la base 
         String insert = "INSERT INTO movimientos (tarjeta, fecha, descripcion, establecimiento, monto, tipo_movimiento) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -159,6 +162,7 @@ public class consultaTarjetaDB {
     }
 
     public void consultarTarjeta(String numeroTarjeta, crearTarjeta tarjeta) {
+        //Consultamos si existe una tarjeta
         try {
             String select = "SELECT * FROM tarjeta WHERE numero = " + numeroTarjeta;
             Statement statementInsert = connection.createStatement();
@@ -178,11 +182,12 @@ public class consultaTarjetaDB {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al consultar a la DB");
+            
         }
     }
 
     public void actualizarSaldoTarjeta(crearTarjeta tarjeta, movimientos mensaje) {
+        //Actualizamos una tarjeta en la base cuando se efectua un movimiento
         try {
             String update = "UPDATE tarjeta SET saldo = ? WHERE numero = ?";
 
@@ -203,6 +208,7 @@ public class consultaTarjetaDB {
     }
 
     public void cancelarTarjeta(crearTarjeta tarjeta, cancelar mensaje) {
+        //Actualizamos la tarjeta en la base y cambiamos su estado a inactivo
         try {
             String update = "UPDATE tarjeta SET estado = false, fecha = ? WHERE numero = ?";
 
