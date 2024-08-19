@@ -340,8 +340,9 @@ public class consulta extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "TARJETA NO ENCONTRADA", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
-
+            
         }
+        pathArchivo = null;
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
@@ -379,6 +380,7 @@ public class consulta extends javax.swing.JFrame {
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "FORMATO DEL DOCUMENTO INCORRECTO", "ERROR", JOptionPane.ERROR_MESSAGE);
+                pathArchivo = null;
             }
 
         } else {

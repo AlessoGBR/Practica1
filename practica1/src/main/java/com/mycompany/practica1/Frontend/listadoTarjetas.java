@@ -274,8 +274,8 @@ public class listadoTarjetas extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             leerArchivos leer = new leerArchivos();
-            leer.leerListadoTarjeta(selectedFile.getAbsolutePath(), this);
             pathArchivo = selectedFile.getParent();
+            leer.leerListadoTarjeta(selectedFile.getAbsolutePath(), this);            
         } else {
             JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
         }
@@ -389,6 +389,16 @@ public class listadoTarjetas extends javax.swing.JFrame {
         cbTipo.setSelectedIndex(0);
 
     }
+
+    public String getPathArchivo() {
+        return pathArchivo;
+    }
+
+    public void setPathArchivo(String pathArchivo) {
+        this.pathArchivo = pathArchivo;
+    }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAplicar;

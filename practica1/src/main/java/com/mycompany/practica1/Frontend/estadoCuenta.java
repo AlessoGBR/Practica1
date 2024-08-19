@@ -267,8 +267,8 @@ public class estadoCuenta extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             leerArchivos leer = new leerArchivos();
-            leer.leerListadoMovimientos(selectedFile.getAbsolutePath(), this);
             pathArchivo = selectedFile.getParent();
+            leer.leerListadoMovimientos(selectedFile.getAbsolutePath(), this);            
         } else {
             JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
         }
@@ -359,6 +359,15 @@ public class estadoCuenta extends javax.swing.JFrame {
         txtInteres.setText("");
         cbTipo.setSelectedIndex(0);
     }
+
+    public String getPathArchivo() {
+        return pathArchivo;
+    }
+
+    public void setPathArchivo(String pathArchivo) {
+        this.pathArchivo = pathArchivo;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAplicar;

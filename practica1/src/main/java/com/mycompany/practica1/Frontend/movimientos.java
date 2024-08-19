@@ -280,12 +280,12 @@ public class movimientos extends javax.swing.JFrame {
         } else if (cbMovimiento.getSelectedItem().toString().equals("ABONO")) {
             movimiento = false;
         }
-        
+
         if (txtDescripcion.getText().length() >= 200) {
             JOptionPane.showMessageDialog(null, "DESCRIPCION DEMASIADO LARGA", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (txtEstablecimiento.getText().length() >=20 ) {
+        if (txtEstablecimiento.getText().length() >= 20) {
             JOptionPane.showMessageDialog(null, "ESTABLECIMIENTO DEMASIADO LARGO", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -299,10 +299,12 @@ public class movimientos extends javax.swing.JFrame {
         if (consulta.tarjetaExistente) {
             if (consulta.tarjetaActiva) {
                 verificarMovimientos vrMovimiento = new verificarMovimientos(tarjeta);
-                vrMovimiento.movimientoValido(cbMovimiento.getSelectedItem().toString(), monto, this);
-                consulta.actualizarSaldoTarjeta(tarjeta, this);
-                actualizarMovimiento(movimientos);
-                consulta.crearMovimiento(tarjeta, movimientos);
+                if (vrMovimiento.movimientoValido(cbMovimiento.getSelectedItem().toString(), monto, this)) {
+                    consulta.actualizarSaldoTarjeta(tarjeta, this);
+                    actualizarMovimiento(movimientos);
+                    consulta.crearMovimiento(tarjeta, movimientos);
+                }
+
             } else {
                 mensajeTarjeta();
             }

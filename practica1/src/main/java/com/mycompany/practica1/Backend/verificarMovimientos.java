@@ -21,30 +21,37 @@ public class verificarMovimientos {
         this.tarjeta = tarjeta;
     }
 
-    public void movimientoValido(String tipoCargo, double monto, movimientos mensajes) {
+    public boolean movimientoValido(String tipoCargo, double monto, movimientos mensajes) {
         // Verifica que tipo de movimiento realiza y si se puede efectuar
         if (tipoCargo.equals("ABONO")) {
             if (tarjeta.getSaldo() == 0) {
                 mensajes.mensajeAlDia();
+                return false;
             } else {
                 abono = tarjeta.getSaldo() - monto;
                 tarjeta.setSaldo(abono);
                 mensajes.mensajeAbono(tarjeta.getSaldo());
+                return true;
             }
         } else if (tipoCargo.equals("CARGO")) {
             if (monto > tarjeta.getLimite()) {
                 mensajes.mensajeCargoMax();
+                return false;
             } else {
                 cargo = tarjeta.getSaldo() + monto;
                 if (cargo > tarjeta.getLimite()) {
                     mensajes.mensajeLimite();
+                    return false;
                 } else {
                     tarjeta.setSaldo(cargo);
                     mensajes.mensajeCargo(tarjeta.getSaldo(), tarjeta.getLimite());
+                    return true;
                 }
 
             }
         }
+        
+        return false;
     }
 
 }

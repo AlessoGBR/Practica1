@@ -236,14 +236,15 @@ public class listadoSolicitudes extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             leerArchivos leer = new leerArchivos();
-            leer.leerListadoSolicitudes(selectedFile.getAbsolutePath(), this);
             pathArchivo = selectedFile.getParent();
+            leer.leerListadoSolicitudes(selectedFile.getAbsolutePath(), this);            
         } else {
             JOptionPane.showMessageDialog(this, "SELECCION CANCELADA");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarActionPerformed
+        System.out.println(pathArchivo);
         reportesDB = new reportesSolicitud();
         try {
             String salarioTexto = txtSalario.getText().trim();
@@ -365,6 +366,16 @@ public class listadoSolicitudes extends javax.swing.JFrame {
         cbEstado.setSelectedIndex(0);
         cbTipo.setSelectedIndex(0);
     }
+
+    public String getPathArchivo() {
+        return pathArchivo;
+    }
+
+    public void setPathArchivo(String pathArchivo) {
+        this.pathArchivo = pathArchivo;
+    }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAplicar;
